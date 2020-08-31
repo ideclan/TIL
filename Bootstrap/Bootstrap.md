@@ -1,6 +1,6 @@
 Courses
 -------
-### Bootstrap
+### Bootstrap Bootcamp
 - [Bootstrap 4 & 3 Framework Tutorial](https://www.inflearn.com/course/bootstrap-2#), 인프런, 2018
 - [나만의 포트폴리오 웹페이지 만들기](https://www.inflearn.com/course/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4#), 인프런, 2019
 
