@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>Theater Information Guide</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="{% static 'img/favicon.png' %}" rel="icon">
+    <link href="{% static 'img/touch-icon.png' %}" rel="touch-icon">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+    <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+</head>
+
+<body>
+<div class="click-closed"></div>
+
+<div class="box-collapse">
+    <div class="title-box-d">
+        <h3 class="title-d">Search Theater</h3>
+    </div>
+    <span class="close-box-collapse right-boxed ion-ios-close"></span>
+    <div class="box-collapse-wrap form">
+        <form class="form-a" action="{% url 'search' %}" method="get">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="Type">Keyword</label>
+                        <input type="text" class="form-control form-control-lg form-control-a" placeholder="Keyword"
+                               name="user_input">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="Type">지역</label>
+                        <select class="form-control form-control-lg form-control-a" name="location">
+                            <option value="">All Type</option>
+                            <option>광주</option>
+                            <option>대구</option>
+                            <option>대전</option>
+                            <option>부산</option>
+                            <option>서울</option>
+                            <option>수원</option>
+                            <option>울산</option>
+                            <option>인천</option>
+                            <option>전주</option>
+                            <option>제주</option>
+                            <option>창원</option>
+                            <option>청도</option>
+                            <option>청주</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="city">오픈런</label>
+                        <select class="form-control form-control-lg form-control-a" name="type">
+                            <option value="">All Type</option>
+                            <option value="TRUE">TRUE</option>
+                            <option value="FALSE">FALSE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-b">Search Theater</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block content %}
+
+{% endblock %}
+
+<section class="section-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <div class="widget-a">
+                    <div class="w-header-a">
+                        <h3 class="w-title-a text-brand">Jiheon Lee</h3>
+                    </div>
+                    <div class="w-footer-a">
+                        <ul class="list-unstyled">
+                            <li class="color-a">
+                                <span class="color-text-a">Email .</span> wlgjsdl0@gmail.com
+                            </li>
+                            <li class="color-a">
+                                <span class="color-text-a">Github .</span> <a href="https://github.com/Jiheon-Lee">https://github.com/Jiheon-Lee</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4 section-md-t3">
+                <div class="widget-a">
+                    <div class="w-header-a">
+                        <h3 class="w-title-a text-brand">The University</h3>
+                    </div>
+                    <div class="w-body-a">
+                        <div class="w-body-a">
+                            <ul class="list-unstyled">
+                                <li class="item-list-a">
+                                    <i class="fa fa-angle-right"></i> <a href="https://www.gachon.ac.kr/">가천대학교</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4 section-md-t3">
+                <div class="widget-a">
+                    <div class="w-header-a">
+                        <h3 class="w-title-a text-brand">The Lab</h3>
+                    </div>
+                    <div class="w-body-a">
+                        <ul class="list-unstyled">
+                            <li class="item-list-a">
+                                <i class="fa fa-angle-right"></i> <a href="http://theteamlab.io/">TEAMLAB</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="nav-footer">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="{% url 'index' %}">Home</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="{% url 'theaters_index' %}">Theater</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="socials-a">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="https://www.facebook.com/profile.php?id=100006976115940">
+                                <i class="fa fa-facebook" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://www.instagram.com/2z__heon/">
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://github.com/Jiheon-Lee/teamlab_2019_winter">
+                                <i class="fa fa-github-alt" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="copyright-footer">
+                    <p class="copyright color-text-a">
+                        &copy; Copyright
+                        <span class="color-a">Jiheon Lee</span> All Rights Reserved.
+                    </p>
+                </div>
+                <div class="credits">
+                    Designed by <a href="https://github.com/Jiheon-Lee">Jiheon Lee</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+<div id="preloader"></div>
+
+<script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'lib/easing/easing.min.js' %}"></script>
+<script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+<script src="{% static 'lib/scrollreveal/scrollreveal.min.js' %}"></script>
+
+<script src="{% static 'contactform/contactform.js' %}"></script>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+<script src="{% static 'lib/jquery/ajax.js' %}"></script>
+
+</body>
+</html>
