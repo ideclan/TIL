@@ -42,6 +42,7 @@ export default {
 ```
 
 - my-project/src/App.vue
+  - Template root 는 하나의 Element 만 허용 ( div tag 1개 )
 
 ```jsx
 <template>
@@ -71,36 +72,45 @@ export default {
 - Favicon : [https://www.favicon-generator.org/](https://www.favicon-generator.org/)
 
 ```html
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
 ```
 
 - Fontawesome Icon
 
 ```html
-<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<link
+  rel="stylesheet"
+  href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+  integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+  crossorigin="anonymous"
+/>
 ```
 
 - Google Font Ubuntu
 
 ```html
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="//fonts.googleapis.com/css?family=Ubuntu"
+/>
 ```
 
 - 반응형 태그 설정 (모바일)
 
 ```html
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 ```
 
 ### Header 컴포넌트 구현
 
 **TodoHeader.vue**
 
-- **scoped** : 해당 컴포넌트 안에서만 적용하는 설정
+- `scoped` : 해당 컴포넌트 안에서만 적용하는 설정
 - 알아두면 상식
-    - font-weight은 글자 굵기
-    - margin에서 px단위가 아닌 rem을 사용하면 글자 굵기에 비율이 정해짐
+  - font-weight은 글자 굵기
+  - margin에서 px단위가 아닌 rem을 사용하면 글자 굵기에 비율이 정해짐
 
 ```jsx
 <template>
@@ -169,10 +179,10 @@ button {
 
 **TodoInput.vue**
 
-- **v-model** : Input에 입력된 텍스트 값을 동적으로 Vue 인스턴스와 연결하는 역할
-- **v-on:click** : 클릭했을 때 호출되는 method 정의
-- **v-on:keyup.enter** : enter를 눌렀을 때 호출되는 method 정의
-- Fontawesome Icon을 사용하여 <span><i>로 버튼처럼 만들 수 있음
+- `v-model` : Input에 입력된 텍스트 값을 동적으로 Vue 인스턴스와 연결하는 역할
+- `v-on:click` : 클릭했을 때 호출되는 method 정의
+- `v-on:keyup.enter` : enter를 눌렀을 때 호출되는 method 정의
+- Fontawesome Icon을 사용하여 `<span><i>`로 버튼처럼 만들 수 있음
 - 외부 App.vue에서 정의한 style을 사용할 수 있음
 - 아직 DB를 사용하지 않으므로 localStorage API를 사용하여 저장된 key, value는 크롬 웹 브라우저 > 개발자 도구 > Application > Storage > Local Storage > localhost:8080에서 확인 가능
 
@@ -180,6 +190,7 @@ button {
 <template>
   <div class="inputBox shadow">
     <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo" />
+    <!-- <button v-on:click="addTodo">add</button> -->
     <span class="addContainer" v-on:click="addTodo">
       <i class="fas fa-plus addBtn"></i>
     </span>
@@ -238,14 +249,14 @@ input:focus {
 
 **TodoList.vue**
 
-- **created** : 인스턴스가 생성되면서 호출되는 라이프 사이클 훅(생성되는 시점에 호출)
-- **this** : 같은 인스턴스를 가르키기 때문에 this로 data의 todoItems 값에 접근이 가능
-- **v-for** : todoItems 배열 안에서 todoItem 개수만큼 반복 (v-for를 사용할 때는 v-bind:key 사용, index는 꼭 사용하지 않아도 됨)
-- 알아두면 상식 : JS API **splice( )** 해당 배열에서 값을 지우고 새로운 배열을 반환 ≠ **slice( )**
+- `created` : 인스턴스가 생성되면서 호출되는 라이프 사이클 훅(생성되는 시점에 호출)
+- `this` : 같은 인스턴스를 가르키기 때문에 this로 data의 todoItems 값에 접근이 가능
+- `v-for` : todoItems 배열 안에서 todoItem 개수만큼 반복 (`v-for`를 사용할 때는 `v-bind:key` 사용, index는 꼭 사용하지 않아도 됨)
+- 알아두면 상식 : JS API `splice( )` 해당 배열에서 값을 지우고 새로운 배열을 반환 ≠ `slice( )`
 
-    **TodoInput.vue** 에서 **JSON.stringify( )** 로 현재는 데이터가 String 타입이므로 객체로 변환하려면 **JSON.parse( )** 사용
+  **TodoInput.vue** 에서 `JSON.stringify( )` \*\*\*\*로 현재는 데이터가 String 타입이므로 객체로 변환하려면 `JSON.parse( )` 사용
 
-- **v-bind:class="{클래스명: 조건}"** : 조건이 false면 해당 클래스가 적용되지 않음
+- `v-bind:class="클래스명: 조건"` : 조건이 false면 해당 클래스가 적용되지 않음
 
 ```jsx
 <template>
@@ -342,7 +353,7 @@ li {
 
 **TodoInput.vue > addTodo 수정**
 
-- 알아두면 상식 : **JSON.stringify( )** JS 객체를 String으로 변환
+- 알아두면 상식 : `JSON.stringify( )` JS 객체를 String으로 변환
 
 ```jsx
 methods: {
@@ -403,12 +414,13 @@ export default {
 ### 리팩토링
 
 - 다음과 같은 구조인 방식인 **컨테이너 컴포넌트** 설계 기법으로 변경
-    - App.vue(상위 컴포넌트)에서는 데이터를 조작하고 Propsdata를 내려줌
-    - 나머지(하위 컴포넌트)에서는 UI 표현만 하고 이벤트를 올려줌
 
-- **v-bind: 내려보낼 props 속성 이름="현재 위치의 컴포넌트 데이터"**
-- **v-on: 하위 컴포넌트에서 발생시킨 이벤트 이름="현재 컴포넌트의 메서드 명"**
-    - **this.$emit('이벤트 이름', 인자1, 인자2 ...)** 하위 컴포넌트에서 해당 이벤트 이름으로 이벤트를 발생시켜 상위 컴포넌트에 전송
+  - App.vue(상위 컴포넌트)에서는 데이터를 조작하고 Propsdata를 내려줌
+  - 나머지(하위 컴포넌트)에서는 UI 표현만 하고 이벤트를 올려줌
+
+- `v-bind: 내려보낼 props 속성 이름="현재 위치의 컴포넌트 데이터"`
+- `v-on: 하위 컴포넌트에서 발생시킨 이벤트 이름="현재 컴포넌트의 메서드 명"`
+  - `this.$emit('이벤트 이름', 인자1, 인자2 ... )` 하위 컴포넌트에서 해당 이벤트 이름으로 이벤트를 발생시켜 상위 컴포넌트에 전송
 
 **App.vue**
 
@@ -578,3 +590,23 @@ export default {
 };
 </script>
 ```
+
+### 모달 컴포넌트 등록
+
+- [Vuejs.org Modal Components 예제](<[https://codesandbox.io/embed/github/vuejs/vuejs.org/tree/master/src/v2/examples/vue-20-modal-component?codemirror=1&hidedevtools=1&hidenavigation=1&theme=light](https://codesandbox.io/embed/github/vuejs/vuejs.org/tree/master/src/v2/examples/vue-20-modal-component?codemirror=1&hidedevtools=1&hidenavigation=1&theme=light)>)
+- 모달 컴포넌트는 **재사용 할 수 있도록 모듈화** 하는 것을 추천
+
+  **components/common/Modal.vue** 생성
+
+- `slot=" "` : 특정 컴포넌트의 일부 UI를 재사용 할 수 있는 기능
+- `v-on:click=" "` == `@click=" "` 같은 의미로 다음과 같이 축약하여 작성 가능
+
+### 트렌지션
+
+- 기본적으로 `v-enter-to` 와 `v-leave` 를, `v-leave-to` 와 `v-enter` 를 같이 사용
+  - `v-enter` : 처음 이펙트가 시작 됐을 때 상태
+  - `v-enter-to` : 이펙트가 시작되고 끝났을 때 상태
+  - `v-enter-active` : `v-enter` + `v-enter-to`
+  - `v-leave` : 기존 상태
+  - `v-leave-to` : 이펙트가 없어진 상태
+  - `v-leave-active` : `v-leave` + `v-leave-to`
