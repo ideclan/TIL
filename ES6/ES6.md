@@ -191,3 +191,20 @@ sum(1, 2);
 ```
 
 - Vue.js 에서 `export default` 는 하나의 파일에서 한 번만을 export 하도록 허용
+
+### ES6 Object Spread Operator
+
+```jsx
+let josh = {
+	field: 'web',
+	language: 'js'
+};
+
+let developer = {
+	nation: 'korea',
+	...josh
+};
+
+console.log(developer)
+// [object Object] { field: "web", language: "js", nation: "korea" }
+```
