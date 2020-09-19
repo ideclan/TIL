@@ -16,7 +16,7 @@
 
 ### CI
 
-- [Travis 정리](https://github.com/Jiheon-Lee/TIL/blob/master/Bootstrap/Bootstrap.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/CI/Travis%20CI.pdf)
+- [Travis 정리](https://github.com/Jiheon-Lee/TIL/blob/master/CI/TravisForCI.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/CI/Travis%20CI.pdf)
 
 ### Crawling
 
