@@ -1,12 +1,10 @@
 ### Android 개발 환경 종류
 
-```
 |개발 환경|사용 언어|개발 ToolKit|
 |------|---|---|
 |응용 프로그램 개발|XML, Java|SDK(Software Development Kit)|
 |시스템 응용 프로그램 개발|C, C++|NDK(Native Development Kit)|
 |하드웨어 제어 및 커널 관련|C, C++|PDK(Platform Development Kit)|
-```
 
 ### Android 특징
 
