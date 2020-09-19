@@ -68,5 +68,6 @@
 
 ### Vue.js
 
-- [Vue.js 정리](https://github.com/Jiheon-Lee/TIL/blob/master/Vue.js/Vue.js.md), [TODO List WEB App](https://github.com/Jiheon-Lee/TIL/tree/master/Vue.js/vue-todo)
+- [Vue.js 정리](https://github.com/Jiheon-Lee/TIL/blob/master/Vue.js/Vue.js.md)
+- [TODO List WEB App](https://github.com/Jiheon-Lee/TIL/tree/master/Vue.js/vue-todo)
 - [Vue.js 실습 파일](https://github.com/Jiheon-Lee/TIL/tree/master/Vue.js/learn-vue-js)
