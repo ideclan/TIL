@@ -314,3 +314,105 @@ class Student {
 - 객체 안에는 맴버 함수 즉, 메소드가 있는 것이 아님
 - 메소드는 한번만 만들어져서 공유
 - 메모리의 프로그램 영역에 저장이 되고, 모든 객체가 공유해서 사용
+
+### 증감 연산자
+
+|증감 연산자|내용|증감 연산자|내용|
+|------|---|------|---|
+|a++|a를 먼저 사용한 후에 1 증가|++a|a를 먼저 1 증가한 후에 사용|
+|a—|a를 먼저 사용한 후에 1 감소|—a|a를 먼저 1 감소한 후에 사용|
+
+```java
+int a = 1, b;
+b = a++;  // 먼저 a를 b에 할당 후 1 증가
+System.out.println(a);  // 2
+System.out.println(b);  // 1
+
+int a = 1, b;
+b = ++a;  // 먼저 a를 1 증가한 후 b에 할당
+System.out.println(a);  // 2
+System.out.println(b);  // 2
+```
+
+### 메소드를 호출하면서 인자 전달
+
+- 원시 변수 : `int a = 10;`
+    - 값이 매개 변수에 복사되어 전달
+- 참조 변수 : `Person p = new Person();`
+    - 객체가 전달되는 경우, 참조 변수의 값만 전달 (주소)
+
+```java
+public static void main(String[] args) {
+		Number n = new Number();
+		Calc c = new Calc();
+		int result = c.add(n);  // 함수 호출 시 인자값을 객체의 주소를 전달
+}
+
+class Number {
+		int num1 = 10;
+		int num2 = 20;
+}
+
+class Calc {
+	int add(Number in){
+				return in.num1 + in.num2;
+		}
+}
+```
+
+### static 멤버
+
+- static 멤버 선언
+
+```java
+class StaticSample {
+		int n;         // non-static 멤버 변수
+		coid g(){...}  // non-static 메소드
+
+		static int m;          // static 멤버 변수
+		static void f() {...}  // static 메소드
+}
+```
+
+- non-static 멤버는 객체가 생성될 때, 객체마다 생김
+- static 멤버는 클래스당 하나만 생성
+    - 모든 객체가 공유해서 사용
+
+### static 변수 접근 방법
+
+- `Circle.pi` 처럼 객체를 생성하지 않아도 클래스 이름으로 접근해서 바로 사용 가능
+
+```java
+public static void main(String[] args){
+		System.out.println("원주율: " + Circle.pi);
+}
+
+class Circle {
+		static double pi = 3.14;
+		double radius;
+		Circle(double radius) {
+				this.radius = radius;
+		}
+		double circleA() {
+				return pi * radius * radius;
+		}
+}
+```
+
+### static 메소드
+
+- 객체를 생성하지 않고도 클래스 이름으로 바로 접근해서 사용 가능
+- 단, non-static 변수에 접근하여 사용은 불가능
+
+```java
+public static void main(String[] args){
+		System.out.println(Circle.circleA(10));
+}
+
+class Circle {
+		static double pi = 3.14;
+		static double circleA(int radius) {
+				return pi * radius * radius;
+		}
+}
+```
