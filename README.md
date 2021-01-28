@@ -48,6 +48,11 @@
 
 - [GitHub Actions 정리](https://github.com/Jiheon-Lee/TIL/blob/master/GitHubActions/GitHubActions.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/GitHubActions/GitHub-Actions.pdf)
 
+### JAVA
+
+- [JAVA 정리](https://github.com/Jiheon-Lee/TIL/blob/master/JAVA/JAVA.md)
+
+
 ### Linux
 
 - [Linux 정리](https://github.com/Jiheon-Lee/TIL/blob/master/Linux/Linux.md), [발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/Linux/Linux.pdf)
