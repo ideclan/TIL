@@ -65,13 +65,29 @@
 
 - [PHP 정리](https://github.com/Jiheon-Lee/TIL/blob/master/PHP/PHP.md)
 
+### Python Black
+
+- [Python Black 정리](https://github.com/Jiheon-Lee/TIL/blob/master/PythonBlack/PythonBlack.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/PythonBlack/Black.pdf)
+
 ### Python Style Guide
 
 - [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/tree/master/PythonStyleGuide)
 
+### Python Type Annotation
+
+- [Python Type Annotation 정리](https://github.com/Jiheon-Lee/TIL/blob/master/PythonTypeAnnotation/PythonTypeAnnotation.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/PythonTypeAnnotation/Type_Annotation.pdf)
+
+### Redis
+
+- [Redis 정리](https://github.com/Jiheon-Lee/TIL/blob/master/Redis/Redis.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/Redis/Redis.pdf)
+
 ### TDD
 
 - [테스트주도개발(TDD)로 만드는 NodeJS API 서버 정리](https://github.com/Jiheon-Lee/TIL/blob/master/TDD/TDDForNode.js.md)
+
+### Travis CI
+
+- [Travis CI 정리](https://github.com/Jiheon-Lee/TIL/blob/master/TravisCI/TravisCI.md), [세미나 발표 자료](https://github.com/Jiheon-Lee/TIL/blob/master/TravisCI/TravisCI.pdf)
 
 ### VSCode Extensions
 
