@@ -306,3 +306,237 @@ while(true) {
 		num++;
 }
 ```
+
+# 클래스와 객체
+
+### 객체 지향 프로그래밍(Object Oriented Programming, OOP)
+
+- 객체를 기반으로 하는 프로그래밍  ex) C++, Python, JAVA
+
+### 절차 프로그래밍(Procedural Programming)
+
+- 시간의 흐름에 따른 프로그래밍  ex) C언어
+
+## 클래스(class)
+
+- 객체에 대한 속성과 기능을 코드로 구현 한 것
+- 객체에 대한 청사진(blueprint)
+    - 객체의 속성
+        - 객체의 특성(property), 속성(attribute), 멤버 변수(member variable)
+    - 객체의 기능
+        - 객체가 하는 기능들을 메서드로 구현
+        - method, member function
+
+### 클래스 정의
+
+- class는 대부분 대문자로 시작
+- 하나의 java 파일에 하나의 클래스를 두는 것이 원칙이나
+- 여러 개의 클래스가 같이 있는 경우 public 클래스는 단 하나이며
+- public 클래스와 자바 파일의 이름은 동일해야 함
+- 자바의 모든 코드는 class 내부에 위치
+
+```java
+(접근 제어자) class 클래스 이름 {
+		멤버 변수;
+		메서드;
+}
+```
+
+```java
+// Student.java
+
+package classpart;  // 패키지는 소문자
+
+public class Student {  // 클래스 이름 대문자로 시작
+		int studentID;
+		String studentName;
+		int grade;
+		String address;
+	
+	public void showStudentInfo() {  // 메소드 이름 소문자로 시작
+			System.out.println(studentName + "," + address);
+	}
+	
+	// 해당 파일에서 실행시켜야 하는 경우
+	/* public static void main(String[] args) {
+		Student studentLee = new Student();
+		studentLee.studentName = "이순신";
+		studentLee.address = "서울시 서초구 서초동";
+		
+		studentLee.showStudentInfo();
+	} */
+}
+```
+
+```java
+// StudentTest.java
+
+package classpart;
+
+public class StudentTest {
+
+	public static void main(String[] args) {
+			Student studentLee = new Student();
+			studentLee.studentName = "이순신";
+			studentLee.address = "서울시 서초구 서초동";
+			
+			studentLee.showStudentInfo();
+	}
+}
+```
+
+## 메서드
+
+- 함수의 일종, 객체의 기능을 제공하기 위해 클래스 내부에 구현되는 함수
+
+### 함수 구현하고 호출하기
+
+```java
+package classpart;
+
+public class FunctionTest {
+
+	public static void main(String[] args) {
+			int num1 = 10;
+			int num2 = 20;
+		
+			int sum = addNum(num1, num2);
+			System.out.println(sum);  // 30
+	}
+	
+	public static int addNum(int n1, int n2) {
+			int result = n1 + n2;
+			return result;
+	}
+
+}
+```
+
+### 메서드 정의
+
+```java
+package classpart;
+
+public class Student {
+		int studentID;
+		String studentName;
+		int grade;
+		String address;
+	
+	public void showStudentInfo() {
+			System.out.println(studentName + "," + address);
+	}
+	
+	public String getStudentName() {
+			return studentName;
+	}
+	
+	public void setStudentName(String name) {
+			studentName = name;
+	}
+}
+```
+
+## 클래스와 인스턴스
+
+- 클래스(static 코드) → 생성(인스턴스 화) → 인스턴스(dynamic memory)
+
+### 클래스 생성
+
+- 클래스를 사용하기 위해서는 클래스를 생성해야 함
+- `new` 예약어를 이용하여 클래스 생성
+
+```java
+클래스형 변수이름 = new 생성자;
+
+// 참조형데이터타입 참조변수 = new 디폴트생성자
+Student studentA = new Student();
+```
+
+### 인스턴스와 힙(heap) 메모리
+
+- 하나의 클래스 코드로 부터 여러 개의 인스턴스를 생성
+- 인스턴스는 힙(heap) 메모리에 생성됨
+- 각각의 인스턴스는 다른 메모리에 다른 값을 가짐
+
+### 참조 변수와 참조 값
+
+- 참조 변수 : 인스턴스 생성 시 선언하는 변수
+- 참조 값 : 인스턴스가 생성되는 힙 메모리 주소
+
+```java
+Student student1 = new Student();
+System.out.println(student1);  // 패지키명.클래스명@16f65612
+```
+
+### 생성자(constructor)
+
+- 인스턴스 생성 시 `new` 키워드와 함께 사용했던 생성자
+
+```java
+// Student.java
+
+package classpart;
+
+public class Student {
+		int studentID;
+		String studentName;
+		int grade;
+		String address;
+	
+	public Student() {}  // 디폴트 생성자, 작성하지 않아도 컴파일 시 자동으로 추가됨, 직접 작성한 생성자가 있다면 추가 X
+
+	public Student(int id, String name) {  // 생성자 직접 작성, 디폴트 생성자와 같은 이름 사용할 수 있으나 매개변수가 달라야 함
+			studentID = id;
+			studentName = name;
+	}
+
+	// ...
+}
+```
+
+```java
+// StudentTest.java
+
+package classpart;
+
+public class StudentTest {
+
+	public static void main(String[] args) {
+			Student studentLee = new Student(100, "이순신");
+	}
+}
+```
+
+- 생성자는 인스턴스를 초기화 할 때의 명령어 집합
+- 생성자의 이름은 그 클래스의 이름과 같음
+- 생성자는 메소드가 아님, 상속되지 않으며, 리턴 값은 없음
+
+### 디폴트 생성자(default constructor)
+
+- 하나의 클래스에는 반드시 적어도 하나 이상의 Constructor가 존재
+- Constructor를 기술하지 않으면 Default Constructor가 자동으로 생김
+    - Default Constructor는 매개 변수, 구현부가 없음
+- 만약 클래스에 매개변수가 있는 생성자를 추가하면 디폴트 생성자는 제공되지 않음
+
+### 생성자 오버로드(constructor overload)
+
+- 필요에 의해 생성자를 추가하는 경우 여러 개의 생성자가 하나의 클래스에 있음 (overload)
+
+```java
+package classpart;
+
+public class Student {
+		int studentID;
+		String studentName;
+		int grade;
+		String address;
+	
+	public Student() {}  // 디폴트 생성자
+
+	public Student(int id, String name) {  // 아이디와 이름을 매개변수로 입력받는 생성자
+			studentID = id;
+			studentName = name;
+	}
+}
+```
