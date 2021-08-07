@@ -1,6 +1,9 @@
 {
+  "engines": {
+    "node": "14.16.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "debug": "node src/main.js"
   },
   "devDependencies": {
     "@types/node": "^16.4.13",
