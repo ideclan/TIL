@@ -1,73 +1,30 @@
 // @ts-check
 
 const http = require('http')
-const { title } = require('process')
-
-/**
- * @typedef Post
- * @property {string} id
- * @property {string} title
- * @property {string} content
- */
-
-/** @type {Post[]} */
-const posts = [
-  {
-    id: 'my_first_post',
-    title: 'My first post',
-    content: 'Hello',
-  },
-  {
-    id: 'my_second_post',
-    title: '나의 두번째 포스트',
-    content: 'Second post!',
-  },
-]
+const { routes } = require('./api')
 
 const server = http.createServer((req, res) => {
-  const POSTS_ID_REGEX = /^\/posts\/([a-zA-Z0-9-_]+)$/
-  const postIdRegexResult =
-    (req.url && POSTS_ID_REGEX.exec(req.url)) || undefined
+  async function main() {
+    const route = routes.find(
+      (_route) =>
+        req.url &&
+        req.method &&
+        _route.url.test(req.url) &&
+        _route.method === req.method
+    )
 
-  if (req.url === '/posts' && req.method === 'GET') {
-    // GET /posts
-    const result = {
-      posts: posts.map((post) => ({
-        id: post.id,
-        title: post.title,
-      })),
-      totalCount: posts.length,
-    }
-
-    res.statusCode = 200
-    res.setHeader('Content-Type', 'application/json; charset=utf-8')
-    res.end(JSON.stringify(result))
-  } else if (postIdRegexResult && req.method === 'GET') {
-    // GET /posts:id
-    const postId = postIdRegexResult[1]
-    const post = posts.find((_post) => _post.id === postId)
-
-    if (post) {
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json; charset=utf-8')
-      res.end(JSON.stringify(post))
-    } else {
+    if (!route) {
       res.statusCode = 404
-      res.end('Post not found.')
+      res.end('Not found.')
+      return
     }
-  } else if (req.url === '/posts' && req.method === 'POST') {
-    // POST /posts
-    req.setEncoding('utf-8')
-    req.on('data', (data) => {
-      console.log(data)
-    })
 
-    res.statusCode = 200
-    res.end('Creating post')
-  } else {
-    res.statusCode = 404
-    res.end('Not found.')
+    const result = await route.callback()
+    res.statusCode = result.statusCode
+    res.end(result.body)
   }
+
+  main()
 })
 
 const PORT = 3000
