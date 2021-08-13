@@ -1,0 +1,11 @@
+{
+  "posts": [
+    { "id": "first_post", "title": "나의 첫 포스트", "content": "안녕하세요!" },
+    {
+      "id": "learn_nodejs",
+      "title": "노드 배우기",
+      "content": "JSON으로 데이터를 관리해 볼까요?"
+    },
+    { "id": "foo", "title": "foo", "content": "foo" }
+  ]
+}
