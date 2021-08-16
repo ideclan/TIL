@@ -965,3 +965,30 @@ module.exports = {
   - 프로젝트 내의 다른 파일은 상대경로를 지정해 가져옴
   - 절대경로를 지정하면 `module.paths` 의 경로들을 순서대로 검사하여 해당 모듈을 가져옴
 - ECMAScript modules: `export` , `import` (\*.mjs)
+- `require('decamelize')` , `require('decamelize/index')` 와 동일, 즉 index.js를 참고
+
+### Package manager & package.json
+
+- npm, yarn : 패키지 매니저
+
+  - `npm install -g yarn` : yarn 설치
+  - `yarn add decamelize` : yarn을 통한 라이브러리 설치, yarn.lock 파일 생성 (=package-lock.json)
+  - `remove` , `-D` , `yarn eslint` , `yarn run lint` etc
+  - Ultra Fast, 스크립트 실행 편리 장점
+
+- package.json : 대략적인 버전 정보
+  - `^` , `~` : Semantic Versioning
+- package-lock.json : 실제로 설치된 버전 정보
+
+- `--save-dev` : 개발하는 환경에서만 필요한 패키지 정보
+- 라이브러리 종속성으로 불 필요한 라이브러리까지 모두 설치하여 용량을 차지하게 됨
+
+  - `du -h node_modules` : 용량 확인 커맨드
+  - `npm install --production` : 프로덕션 서버에서 필요한 라이브러리만 설치
+
+- `npm install decamelize@3.1.0` : `@` 로 버전을 명시하여 설치
+- `npm update decamelize` | `^3.1.0` : 최신 Minor 버전으로 업데이트 3.1.0 ⇒ 3.2.0
+- `npm update decamelize` | `~3.1.0` : 최신 Patch 버전으로 업데이트 3.1.0 ⇒ 3.1.1
+
+- `./node_modules/.bin/eslint src/**/*` : 바이너리 파일 실행 예시
+  - package.json 내 에서는 scripts에 추가하여 `eslint src/**/*` 로 사용 가능
