@@ -992,3 +992,108 @@ module.exports = {
 
 - `./node_modules/.bin/eslint src/**/*` : 바이너리 파일 실행 예시
   - package.json 내 에서는 scripts에 추가하여 `eslint src/**/*` 로 사용 가능
+
+## Stream
+
+- stream은 스트림 가능한 소스로부터 데이터를 작은 청크로 쪼개 처리할 수 있게 함
+- 큰 데이터를 처리해야 하거나, 비동기적으로만 얻을 수 있는 데이터르 처리해야 할 때 유용
+- `data`, `error`, `end` 등의 이벤트 핸들러를 달아 처리
+    - 특별히 지정하지 않으면 data는 Buffer가 됨
+
+```jsx
+const fs = require('fs)
+
+// const rs = fs.createReadStream('file.txt')
+const rs = fs.createReadStream('file.txt', {
+	encoding: 'utf-8',
+})
+
+rs.on('data', data => {
+	// ...
+})
+rs.on('error', error => { /* ... */ })
+rs.on('end', () => { /* ... */ })
+```
+
+### Stream의 종류
+
+- Readable
+    - 스트림으로부터 읽을 수 있음
+        - `fs.createReadStream`
+        - `process.stdin`
+        - 서버 입장의 HTTP 요청
+        - 클라이언트 입장의 HTTP 응답
+
+- Writable
+    - 스트림에 출력할 수 있음
+        - `fs.createWriteStream`
+        - `process.stdout`
+        - 클라이언트 입장의 HTTP 요청
+        - 서버 입장의 HTTP 응답
+
+- Duplex
+    - 이 스트림에 입력을 받을 수 있고, 출력을 보낼 수도 있음
+        - TCP sockets
+        - zlib streams
+        - crypto streams
+
+- Transform
+    - 입력받은 스트림을 변환해 새로운 스트림으로 만듬
+        - zlib streams
+        - crypto streams
+
+### Stream을 사용할 때와 아닐 때의 퍼모먼스 차이
+
+- `fs.readFileSync` 로 처리할 때 해당 파일을 통째로 RAM으로 올려 순차적으로 읽고 완료될 때 까지 버퍼를 내려놓지 못함, 따라서 상당한 메모리를 사용함
+- `fs.createReadStream` 는 큰 파일을 작은 chunk 단위로 쪼개 해당 chunck 사이즈만큼 RAM으로 올려 chunk 단위로 처리함, 따라서 큰 파일을 처리할 때는 stream으로 처리해야 메모리 측면에서 유리
+- 네트워크 입력 받거나 파일을 전송, 파일을 업로드할 때 등 stream 활용하는 것이 좋음
+
+### Stream 처리 시 유의점
+
+- json : 어디에서 chunk가 짤릴 지 예측할 수 없음
+
+    ex) `{"data": 4}\n{"da`
+
+### Pipeline과 Promise
+
+- pipeline은 transform stream을 쉽게 활용하게 도와줌
+
+```jsx
+// @ts-check
+
+/*
+stream.pipeline(
+  fs.createReadStream('local/big-file'),
+  zlib.createGzip(),
+  fs.createWriteStream('local/big-file.gz')
+)
+*/
+
+const fs = require('fs')
+const stream = require('stream')
+const zlib = require('zlib')
+const util = require('util')
+
+async function gzip() {
+  return util.promisify(stream.pipeline)(
+    fs.createReadStream('local/big-file'),
+    zlib.createGzip(),
+    fs.createWriteStream('local/big-file.gz')
+  )
+}
+
+async function gunzip() {
+  return util.promisify(stream.pipeline)(
+    fs.createReadStream('local/big-file.gz'),
+    zlib.createGunzip(),
+    fs.createWriteStream('local/big-file.unzipped')
+  )
+}
+
+async function main() {
+  await gzip()
+  await gunzip()
+}
+
+main()
+```
