@@ -16,18 +16,22 @@ router.get('/', (req, res) => {
 })
 
 router.param('id', (req, res, next, value) => {
-  // @ts-ignore
-  const user = USERS[value]
+  try {
+    // @ts-ignore
+    const user = USERS[value]
 
-  if (!user) {
-    const err = new Error('User not found.')
-    err.statusCode = 404
-    throw err
+    if (!user) {
+      const err = new Error('User not found.')
+      err.statusCode = 404
+      throw err
+    }
+
+    // @ts-ignore
+    req.user = USERS[value]
+    next()
+  } catch (err) {
+    next(err)
   }
-
-  // @ts-ignore
-  req.user = USERS[value]
-  next()
 })
 
 router.get('/:id', (req, res) => {
