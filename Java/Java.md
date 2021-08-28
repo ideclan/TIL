@@ -9,18 +9,18 @@
 ```java
 package chapter2;
 public class BinaryTest {
-	public static void main(String[] args) {
-		int num = 10;
-		int bNum = 0B1010;   // 2진수 0B
-		int oNum = 012;      // 8진수 0
-		int hNum = 0XA;      // 16진수 0X
+  public static void main(String[] args) {
+    int num = 10;
+    int bNum = 0B1010;   // 2진수 0B
+    int oNum = 012;      // 8진수 0
+    int hNum = 0XA;      // 16진수 0X
 
-		// 10
-		System.out.println(num);
-		System.out.println(bNum);
-		System.out.println(oNum);
-		System.out.println(hNum);
-	}
+    // 10
+    System.out.println(num);
+    System.out.println(bNum);
+    System.out.println(oNum);
+    System.out.println(hNum);
+  }
 }
 ```
 
@@ -84,14 +84,14 @@ boolean isMarried = false;
 ```java
 package chapter2;
 public class BinaryTest {
-	public static void main(String[] args) {
-		// 지역 변수로 자료형 추론이 가능
-		var num = 10;  // int
-		var dNum = 10.0;  // double
-		var str = "hello";  // String
+  public static void main(String[] args) {
+    // 지역 변수로 자료형 추론이 가능
+    var num = 10;  // int
+    var dNum = 10.0;  // double
+    var str = "hello";  // String
 
-		num = 3.14;  // 컴파일 에러 - int 형으로 추론된 변수는 double 값을 다시 할당할 수 없음
-	}
+    num = 3.14;  // 컴파일 에러 - int 형으로 추론된 변수는 double 값을 다시 할당할 수 없음
+  }
 }
 ```
 
@@ -215,13 +215,13 @@ System.out.println(num >> 2);  // 3, 15 / 2^3, 00000011
 
 ```java
 if(조건1) {
-	수행문1;
-}
-else if(조건2) {
-	수행문2;
-}
-else {
-	수행문3;
+  수행문1;
+  }
+  else if(조건2) {
+  수행문2;
+  }
+  else {
+  수행문3;
 }
 ```
 
@@ -229,12 +229,12 @@ else {
 
 ```java
 switch(rank) {
-	case a: case b: case c:  // 값은 다르지만 같은 수행문을 해야 할 경우
-		수행문1;
-		break;
-	case d: 수행문2;
-		break;
-	default: 수행문3;
+  case a: case b: case c:  // 값은 다르지만 같은 수행문을 해야 할 경우
+    수행문1;
+    break;
+  case d: 수행문2;
+    break;
+  default: 수행문3;
 }
 ```
 
@@ -256,19 +256,19 @@ while(조건식) {
 
 ```java
 do {
-	수행문1;
-} while(조건식);
-	수행문2;
+  수행문1;
+  } while(조건식);
+  수행문2;
 ```
 
 ### for 문
 
 ```java
 for(초기화식; 조건식; 증감식) {
-	수행문;
-	for(초기화식; 조건식; 증감식) {  // 중첩 반복문
-		수행문;
-	}
+  수행문;
+  for(초기화식; 조건식; 증감식) {  // 중첩 반복문
+    수행문;
+  }
 }
 ```
 
@@ -279,9 +279,9 @@ int total = 0;
 int num;
 
 for (num = 1; num <= 100; num++) {
-	if(num % 2 == 1)
-		continue;  // 홀수인 경우 아래 수행문 무시
-	total += num;
+  if(num % 2 == 1)
+    continue;  // 홀수인 경우 아래 수행문 무시
+  total += num;
 }
 ```
 
@@ -294,12 +294,12 @@ int sum = 0;
 int num
 
 while(true) {
-	sum += num;
+  sum += num;
 
-	if(sum > 100)
-		break;  // sum 이 100보다 클 때 반복문 종료
+  if(sum > 100)
+    break;  // sum 이 100보다 클 때 반복문 종료
 
-	num++;
+  num++;
 }
 ```
 
@@ -333,8 +333,8 @@ while(true) {
 
 ```java
 (접근 제어자) class 클래스 이름 {
-	멤버 변수;
-	메서드;
+  멤버 변수;
+  메서드;
 }
 ```
 
@@ -344,23 +344,23 @@ while(true) {
 package classpart;  // 패키지는 소문자
 
 public class Student {  // 클래스 이름 대문자로 시작
-	int studentID;
-	String studentName;
-	int grade;
-	String address;
+  int studentID;
+  String studentName;
+  int grade;
+  String address;
 
-	public void showStudentInfo() {  // 메소드 이름 소문자로 시작
-		System.out.println(studentName + "," + address);
-	}
+  public void showStudentInfo() {  // 메소드 이름 소문자로 시작
+    System.out.println(studentName + "," + address);
+  }
 
-	// 해당 파일에서 실행시켜야 하는 경우
-	/* public static void main(String[] args) {
-		Student studentLee = new Student();
-		studentLee.studentName = "이순신";
-		studentLee.address = "서울시 서초구 서초동";
+  // 해당 파일에서 실행시켜야 하는 경우
+  /* public static void main(String[] args) {
+    Student studentLee = new Student();
+    studentLee.studentName = "이순신";
+    studentLee.address = "서울시 서초구 서초동";
 
-		studentLee.showStudentInfo();
-	} */
+    studentLee.showStudentInfo();
+  } */
 }
 ```
 
@@ -371,13 +371,13 @@ package classpart;
 
 public class StudentTest {
 
-	public static void main(String[] args) {
-		Student studentLee = new Student();
-		studentLee.studentName = "이순신";
-		studentLee.address = "서울시 서초구 서초동";
+  public static void main(String[] args) {
+    Student studentLee = new Student();
+    studentLee.studentName = "이순신";
+    studentLee.address = "서울시 서초구 서초동";
 
-		studentLee.showStudentInfo();
-	}
+    studentLee.showStudentInfo();
+  }
 }
 ```
 
@@ -392,18 +392,18 @@ package classpart;
 
 public class FunctionTest {
 
-	public static void main(String[] args) {
-		int num1 = 10;
-		int num2 = 20;
+  public static void main(String[] args) {
+    int num1 = 10;
+    int num2 = 20;
 
-		int sum = addNum(num1, num2);
-		System.out.println(sum);  // 30
-	}
+    int sum = addNum(num1, num2);
+    System.out.println(sum);  // 30
+  }
 
-	public static int addNum(int n1, int n2) {
-		int result = n1 + n2;
-		return result;
-	}
+  public static int addNum(int n1, int n2) {
+    int result = n1 + n2;
+    return result;
+  }
 
 }
 ```
@@ -414,22 +414,22 @@ public class FunctionTest {
 package classpart;
 
 public class Student {
-	int studentID;
-	String studentName;
-	int grade;
-	String address;
+  int studentID;
+  String studentName;
+  int grade;
+  String address;
 
-	public void showStudentInfo() {
-		System.out.println(studentName + "," + address);
-	}
+  public void showStudentInfo() {
+    System.out.println(studentName + "," + address);
+  }
 
-	public String getStudentName() {
-		return studentName;
-	}
+  public String getStudentName() {
+    return studentName;
+  }
 
-	public void setStudentName(String name) {
-		studentName = name;
-	}
+  public void setStudentName(String name) {
+    studentName = name;
+  }
 }
 ```
 
@@ -475,19 +475,19 @@ System.out.println(student1);  // 패지키명.클래스명@16f65612
 package classpart;
 
 public class Student {
-	int studentID;
-	String studentName;
-	int grade;
-	String address;
+  int studentID;
+  String studentName;
+  int grade;
+  String address;
 
-	public Student() {}  // 디폴트 생성자, 작성하지 않아도 컴파일 시 자동으로 추가됨, 직접 작성한 생성자가 있다면 추가 X
+  public Student() {}  // 디폴트 생성자, 작성하지 않아도 컴파일 시 자동으로 추가됨, 직접 작성한 생성자가 있다면 추가 X
 
-	public Student(int id, String name) {  // 생성자 직접 작성, 디폴트 생성자와 같은 이름 사용할 수 있으나 매개변수가 달라야 함
-		studentID = id;
-		studentName = name;
-	}
+  public Student(int id, String name) {  // 생성자 직접 작성, 디폴트 생성자와 같은 이름 사용할 수 있으나 매개변수가 달라야 함
+    studentID = id;
+    studentName = name;
+  }
 
-	// ...
+  // ...
 }
 ```
 
@@ -498,9 +498,9 @@ package classpart;
 
 public class StudentTest {
 
-	public static void main(String[] args) {
-		Student studentLee = new Student(100, "이순신");
-	}
+  public static void main(String[] args) {
+    Student studentLee = new Student(100, "이순신");
+  }
 }
 ```
 
@@ -523,16 +523,16 @@ public class StudentTest {
 package classpart;
 
 public class Student {
-	int studentID;
-	String studentName;
-	int grade;
-	String address;
+  int studentID;
+  String studentName;
+  int grade;
+  String address;
 
-	public Student() {}  // 디폴트 생성자
+  public Student() {}  // 디폴트 생성자
 
-	public Student(int id, String name) {  // 아이디와 이름을 매개변수로 입력받는 생성자
-		studentID = id;
-		studentName = name;
-	}
+  public Student(int id, String name) {  // 아이디와 이름을 매개변수로 입력받는 생성자
+    studentID = id;
+    studentName = name;
+  }
 }
 ```
