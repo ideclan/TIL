@@ -26,7 +26,7 @@
 - [Linux](https://github.com/ideclan/TIL/blob/master/Linux/Linux.md)
 - [Java](https://github.com/ideclan/TIL/blob/master/Java/Java.md)
 - Python
-  - [Black](https://github.com/ideclan/TIL/blob/master/Black/Black.md)
-  - [Type Annotation](https://github.com/ideclan/TIL/blob/master/TypeAnnotation/TypeAnnotation.md)
+  - [Black](https://github.com/ideclan/TIL/blob/master/Python/Black.md)
+  - [Type Annotation](https://github.com/ideclan/TIL/blob/master/Python/TypeAnnotation.md)
 - VSCode
-  - [Java](https://github.com/ideclan/TIL/blob/master/VSCode/Extension.md)
+  - [Extension](https://github.com/ideclan/TIL/blob/master/VSCode/Extension.md)
