@@ -1,8 +1,8 @@
-# 📖 Today I Learned (TIL)
+# Today I Learned
 
-- 오늘 배운, 알게 된, 학습한 내용을 정리해두는 저장소
+오늘 배운, 알게 된, 학습한 내용을 정리
 
-## Backend
+## Back-end
 
 - [Node.js](https://github.com/ideclan/TIL/blob/master/Node.js/Node.js.md)
 - [Express](https://github.com/ideclan/TIL/blob/master/Express/Express.md)
@@ -15,7 +15,7 @@
 - [MongoDB](https://github.com/ideclan/TIL/blob/master/MongoDB/MongoDB.md)
 - [Redis](https://github.com/ideclan/TIL/blob/master/Redis/Redis.md)
 
-## Frontend
+## Front-end
 
 - [Javascript (ES6)](https://github.com/ideclan/TIL/blob/master/Javascript/ES6.md)
 - [Vue.js](https://github.com/ideclan/TIL/blob/master/Vue.js/Vue.js.md)
