@@ -53,21 +53,15 @@ const Koa = require("koa"),
 
 const app = websockify(new Koa());
 
-// Regular middleware
-// Note it's app.ws.use and not app.use
 app.ws.use(function (ctx, next) {
-  // return `next` to pass the context (ctx) on to the next ws middleware
   return next(ctx);
 });
 
 // Using routes
 app.ws.use(
   route.all("/test/:id", function (ctx) {
-    // `ctx` is the regular koa context created from the `ws` onConnection `socket.upgradeReq` object.
-    // the websocket is added to the context on `ctx.websocket`.
     ctx.websocket.send("Hello World");
     ctx.websocket.on("message", function (message) {
-      // do something with the message from client
       console.log(message);
     });
   })
@@ -84,7 +78,6 @@ app.listen(3000);
 ```javascript
 // src/main.js
 
-// @ts-check
 const Koa = require("koa");
 const Pug = require("koa-pug");
 const path = require("path");
@@ -96,8 +89,6 @@ const mongoClient = require("./mongo");
 
 const app = websockify(new Koa());
 
-// @ts-ignore
-// eslint-disable-next-line no-new
 new Pug({
   viewPath: path.resolve(__dirname, "./views"),
   app,
@@ -144,41 +135,24 @@ app.listen(3000);
 - `IIFE` : 즉시 실행 함수 표현, 브라우저 console 창에서 socket 이 노출되는 부분을 막기 위해 활용
 
 ```javascript
-// public/client.js
-
-// @ts-check
+// src/public/client.js
 
 // IIFE
 (() => {
   const socket = new WebSocket(`ws://${window.location.host}/ws`);
   const formEl = document.getElementById("form");
   const chatsEl = document.getElementById("chats");
-  /** @type {HTMLInputElement | null} */
-  // @ts-ignore
   const inputEl = document.getElementById("input");
 
   if (!formEl || !inputEl || !chatsEl) {
     throw new Error("Init failed!");
   }
 
-  /**
-   * @typedef Chat
-   * @property {string} nickname
-   * @property {string} message
-   */
-
-  /**
-   * @type {Chat[]}
-   */
   const chats = [];
 
   const adjectives = ["멋진", "훌륭한", "친절한", "새침한"];
   const animals = ["물범", "사자", "사슴", "돌고래", "독수리"];
 
-  /**
-   * @param {string[]} array
-   * @returns {string}
-   */
   function pickRandom(array) {
     const randomIdx = Math.floor(Math.random() * array.length);
     const result = array[randomIdx];
@@ -236,7 +210,6 @@ module.exports = client;
 ```javascript
 // src/main.js
 
-// @ts-check
 const Koa = require("koa");
 const Pug = require("koa-pug");
 const path = require("path");
@@ -248,8 +221,6 @@ const mongoClient = require("./mongo");
 
 const app = websockify(new Koa());
 
-// @ts-ignore
-// eslint-disable-next-line no-new
 new Pug({
   viewPath: path.resolve(__dirname, "./views"),
   app,
@@ -261,7 +232,6 @@ app.use(async (ctx) => {
   await ctx.render("main");
 });
 
-/* eslint-disable-next-line no-underscore-dangle */
 const _client = mongoClient.connect();
 
 async function getChatsCollection() {
@@ -333,41 +303,24 @@ app.listen(3000);
 ```
 
 ```javascript
-// src/client.js
-
-// @ts-check
+// src/public/client.js
 
 // IIFE
 (() => {
   const socket = new WebSocket(`ws://${window.location.host}/ws`);
   const formEl = document.getElementById("form");
   const chatsEl = document.getElementById("chats");
-  /** @type {HTMLInputElement | null} */
-  // @ts-ignore
   const inputEl = document.getElementById("input");
 
   if (!formEl || !inputEl || !chatsEl) {
     throw new Error("Init failed!");
   }
 
-  /**
-   * @typedef Chat
-   * @property {string} nickname
-   * @property {string} message
-   */
-
-  /**
-   * @type {Chat[]}
-   */
   const chats = [];
 
   const adjectives = ["멋진", "훌륭한", "친절한", "새침한"];
   const animals = ["물범", "사자", "사슴", "돌고래", "독수리"];
 
-  /**
-   * @param {string[]} array
-   * @returns {string}
-   */
   function pickRandom(array) {
     const randomIdx = Math.floor(Math.random() * array.length);
     const result = array[randomIdx];
