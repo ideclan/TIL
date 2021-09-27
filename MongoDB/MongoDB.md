@@ -10,7 +10,7 @@
 - 정해진 스키마가 없음
 - 데이터베이스의 종류에 따라 그 특성이 매우 다름 (RDBMS가 비슷비슷한 것과 다름)
 
-## 장점
+## NoSQL의 장점
 
 - **높은 수평 확장성**
 - 초기 개발의 용이성
@@ -28,7 +28,7 @@ ex) CPU 1개, 메모리 2GB인 인스턴스의 DB가 유저 1만명의 요청을
 - 더 많은 인스턴스를 만들어 더 큰 로드를 감당
 - 수평 확장이 가능한 구조이고, 운영 비용만 감당할 수 있다면 **이론적으로 얼마나 많은 로드라도 받아낼 수 있음**
 
-## 단점
+## NoSQL의 단점
 
 - 표준의 부재
 - SQL에 비해 약한 query capability
@@ -47,19 +47,65 @@ ex) CPU 1개, 메모리 2GB인 인스턴스의 DB가 유저 1만명의 요청을
 - value는 어떤 값이든 될 수 있음
 - NoSQL 데이터베이스의 가장 단순한 형태
 
-### Document-based
+### Document
 
-- **DynamoDB**, CouchDB
+- **MongoDB**, CouchDB
 - 각 레코드가 하나의 문서가 됨
 - 문서는 데이터베이스에 따라 XML, YAML, JSON, BSON 등을 사용
 - 문서의 내부적 구조를 통한 쿼리 최적화, 활용성 높은 API 등이 제공
 
-### Graph-based
+### Graph
 
 - Neo4j, AWS Neptune
 - 그래프 이론을 바탕으로, 데이터베이스를 그래프로 표현
 - 그래프는 node(객체)와 egde(관계), 그리고 property(객체의 속성)로 이루어 짐
 - 관계가 first-class citizen이기 떄문에 관계 기반 문제(실시간 추천 등)에 유리
+
+## MongoDB
+
+- 문서지향(Document-Oriented) NoSQL 데이터베이스 시스템
+- MySQL의 테이블 같은 스키마가 고정된 구조 대신 `JSON` 형태의 동적 스키마형 문서 제공
+- 이를 `BSON`(Binary JSON)이라 하며, BSON 형태로 각 문서가 저장
+
+## MongoDB의 개념
+
+- MongoDB에서의 데이터는 `Document`(RDBMS에서의 Row)
+- 이 데이터의 집합을 `Collection`(RDBMS에서의 Table)
+- 이 Collection의 집합을 `DB` 라고 함
+- Document는 JSON 형태의 `Key-Value` 쌍으로 이루어 짐
+- Document에는 `_id`가 존재, RDBMS의 `Primary Key`와 같은 개념
+
+## MongoDB의 특징
+
+| RDBMS         | MongoDB            |
+| ------------- | ------------------ |
+| Database      | Database           |
+| Table(테이블) | Collection(컬렉션) |
+| Row(행)       | Document(도큐먼트) |
+| Column(열)    | Field(필드)        |
+| Primary Key   | Primary Key(\_id)  |
+
+- 스키마 없는(schema-less) 데이터베이스를 이용한 신속 개발, 필드를 추가하거나 제거하는 것이 매우 쉬움
+- `Join`이 없으므로 `Join`이 필요 없도록 데이터 구조화가 필요
+- 쉬운 수평 확장성
+- 다양한 인덱싱 제공
+- `Auto Sharing` 가능, 즉 Primary Key 기반으로 여러 서버에 데이터를 나누는 `scale-out` 가능
+- 다양한 종류의 쿼리문을 지원(필터링, 수집, 정렬, 정규표현식 등)
+
+## MongoDB의 장점
+
+- RDBMS 속도보다 굉장히 빠름 (RDBMS보다 100배 이상 빠르다고 함)
+- 스키마(schema) 관리가 필요 없으며, schema-less로 어떤 형태의 데이터도 저장 가능
+- 데이터를 읽고/쓰기가 빠름
+- `scale-out` 구조여서 쉽게 운영가능, `auto-sharding` 지원
+  - `scale-out` : 기존의 서버와 같은 사양 또는 비슷한 사양의 서버 대수를 증가시키는 방법으로 처리 능력을 향샹시키는 것
+  - `sharding` : 데이터를 여러 서버에 분산해서 저장하고 처리할 수 있도록 하는 기술
+
+## MongoDB의 단점
+
+- 복잡한 쿼리를 사용할 수 없음(`Join`이 없음)
+- 메모리 사용량이 큰 편
+- `SQL`을 완전히 이전할 수 없음
 
 ## MongoDB Atlas
 
