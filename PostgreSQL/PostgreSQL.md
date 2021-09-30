@@ -26,3 +26,85 @@
 
 - 읽기가 많은 간단한 작업의 경우 MySQL과 같은 다른 `RDBMS` 보다 성능이 떨어짐
 - `Update`를 할 때, 과거 행을 삭제하고 변경된 데이터를 가진 새로운 행을 추가하는 형태로 빈번한 Update가 필요한 경우 적합하지 않음
+
+## PostgreSQL 설치
+
+Mac OS brew
+
+```bash
+$ brew install postgresql
+```
+
+postgresql 서비스 실행
+
+```bash
+$ pg_ctl -D /usr/local/var/postgres start
+
+$ brew services start postgresql
+```
+
+서비스가 정상적으로 실행되었는 지 확인
+
+```bash
+$ postgres -V
+```
+
+## PostgreSQL 접속
+
+- 설치하고 나면, 기본적으로 postgres 유저가 자동적으로 생성
+- PostgreSQL 에서는 PostgreSQL 연결을 위해서 `psql` 이라는 쉘을 제공
+
+```bash
+$ psql postgres
+```
+
+## PostgreSQL Database Setup
+
+데이터베이스 생성
+
+```postgresql
+$ postgres=# CREATE test;
+
+$ postgres=# \list;
+```
+
+데이터베이스 유저 생성
+
+```postgresql
+$ postgres=# CREATE USER myuser WITH ENCRYPTED PASSWORD 'mypass';
+```
+
+> 생성한 유저로 데이터베이스 접속 시
+>
+> `$ psql postgres -U <username> -d <dbname> -h localhost --password`
+
+유저의 데이터베이스 접근 권한 (모든)
+
+```postgresql
+$ postgres=# GRANT ALL PRIVILEGES ON DATABASE test TO myuser;
+```
+
+## node-postgres
+
+`pg` : PostgreSQL 데이터베이스 접근하기 위한 Node.js Module
+
+```bash
+$ npm install pg
+```
+
+```javascript
+const { Client } = require("pg");
+
+const client = new Client({
+  user: "myuser",
+  password: "mypass",
+  database: "test",
+});
+
+await client.connect();
+
+const res = await client.query("SELECT $1::text as message", ["Hello world!"]);
+console.log(res.rows[0].message); // Hello world!
+
+await client.end();
+```
