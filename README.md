@@ -4,17 +4,17 @@
 
 ## Back-end
 
-- [Node.js](https://github.com/ideclan/TIL/blob/master/Node.js/Node.js.md)
-- [Express](https://github.com/ideclan/TIL/blob/master/Express/Express.md)
+- [Node.js](https://github.com/jiheonn/TIL/tree/master/Node.js)
+- [Express](https://github.com/jiheonn/TIL/tree/master/Express)
 - [TDD](https://github.com/ideclan/TIL/blob/master/TDD/Node.js.md)
 
 ## DevOps
 
-- [Travis CI](https://github.com/ideclan/TIL/blob/master/TravisCI/TravisCI.md)
-- [Github Action](https://github.com/ideclan/TIL/blob/master/GithubAction/GithubAction.md)
 - [MongoDB](https://github.com/ideclan/TIL/blob/master/MongoDB/MongoDB.md)
 - [PostgreSQL](https://github.com/ideclan/TIL/blob/master/PostgreSQL/PostgreSQL.md)
 - [Redis](https://github.com/ideclan/TIL/blob/master/Redis/Redis.md)
+- [Github Action](https://github.com/ideclan/TIL/blob/master/GithubAction/GithubAction.md)
+- [Travis CI](https://github.com/ideclan/TIL/blob/master/TravisCI/TravisCI.md)
 
 ## Front-end
 
@@ -27,8 +27,5 @@
 - [Git](https://github.com/ideclan/TIL/blob/master/Git/Git.md)
 - [Linux](https://github.com/ideclan/TIL/blob/master/Linux/Linux.md)
 - [Java](https://github.com/ideclan/TIL/blob/master/Java/Java.md)
-- Python
-  - [Black](https://github.com/ideclan/TIL/blob/master/Python/Black.md)
-  - [Type Annotation](https://github.com/ideclan/TIL/blob/master/Python/TypeAnnotation.md)
-- VSCode
-  - [Extension](https://github.com/ideclan/TIL/blob/master/VSCode/Extension.md)
+- [Python](https://github.com/jiheonn/TIL/tree/master/Python)
+- [VSCode Extension](https://github.com/jiheonn/TIL/blob/master/VSCode/Extension.md)
