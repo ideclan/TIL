@@ -23,11 +23,11 @@
 language: node_js
 node_js: 12
 before_install:
-	- cd backend/
-	- npm install
+  - cd backend/
+  - npm install
 cache: npm
 script:
-	- npm run test
+  - npm run test
 ```
 
 - 언어는 node.js , 버전은 12 로 지정합니다.
