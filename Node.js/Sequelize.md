@@ -11,7 +11,7 @@ Node.js에서 가장 많이 사용되는 ORM
 - JavaScript의 비동기 코드를 더 우아하게 만듬
 - Chaining을 통해 Callback Hell에서 탈출
 - 깔끔한 예외 처리를 할 수 있게 함
-- 'async'와 'await'를 이용하여 간편한 비동기 제어
+- `async`와 `await`를 이용하여 간편한 비동기 제어
 
 ## ORM
 
@@ -37,4 +37,46 @@ $ npm install -g sequelize-cli
 
 ```bash
 $ sequelize init
+```
+
+```
+|-- config
+|    `-- config.json
+|-- migrations
+|-- models
+|    `-- index.js
+|-- seeders
+```
+
+- config : 데이터베이스 연결 정보
+- migrations : 데이터베이스 스키마의 버전 관리
+- models : 데이터베이스 각 테이블의 정보 및 필드타입을 정의
+- seeders : 테이블에 기본 데이터를 넣고 싶은 경우 사용
+
+연결할 데이터베이스에 대한 정보를 `config/config.json` 에서 수정
+
+```json
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "database_development",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
 ```
