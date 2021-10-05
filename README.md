@@ -6,7 +6,8 @@
 
 - [Node.js](https://github.com/jiheonn/TIL/tree/master/Node.js)
 - [Express](https://github.com/jiheonn/TIL/tree/master/Express)
-- [TDD](https://github.com/ideclan/TIL/blob/master/TDD/Node.js.md)
+- [Sequelize](https://github.com/ideclan/TIL/blob/master/Node.js/Sequelize.md)
+- [TDD](https://github.com/ideclan/TIL/blob/master/Node.js/TDD.md)
 
 ## DevOps
 
