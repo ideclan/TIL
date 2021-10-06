@@ -66,6 +66,11 @@ $ sequelize init
     "database": "database_development",
     "host": "127.0.0.1",
     "dialect": "mysql"
+    // "timezone": "+09:00",
+    // "define": {
+    //   "freezeTableName": true,
+    //   "timestamps": false
+    // }
   },
   "test": {
     "username": "root",
@@ -84,14 +89,23 @@ $ sequelize init
 }
 ```
 
+> 이후 `createdAt`, `updatedAt` 등 DATETIME 형태의 데이터를 삽입하는 경우 UTC 시간으로 입력되는 이슈가 발생하므로 필요한 경우 한국 시간(UTC+09:00) 으로 설정  
+> `"timezone": "+09:00"`
+
+> Sequelize는 기본적으로 테이블명을 복수형으로 만드는데, 복수형이 아닌 Model 이름 그대로 사용하기를 원할 때의 설정  
+> `define: { freezeTableName: true }`
+
+> Sequelize는 `SELECT` 또는 `INSERT` 때의 자동으로 `createdAt`과 `updatedAt`을 함께 적용, 이를 Off 할 때의 설정  
+> `define: { timestamps: true }`
+
 ## Sequelize 모델 정의 및 마이그레이션
 
 Sequelize CLI를 통해 모델을 정의하고 마이그레이션을 통해 실제 데이터베이스에 반영이 가능
 
-다음 예제는 `userId`와 `userName`을 가진 `User` 모델을 생성
+다음 예제는 `name`와 `age`를 가진 `User` 모델을 생성
 
 ```bash
-$ sequelize model:generate --name User --attributes userId:integer,userName:string
+$ sequelize model:generate --name User --attributes name:string,age:integer
 ```
 
 이를 통해 아래와 같이 총 2개의 파일이 생성됨
@@ -114,8 +128,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      userId: DataTypes.INTEGER,
-      userName: DataTypes.STRING,
+      name: DataTypes.STRING,
+      age: DataTypes.INTEGER,
     },
     {
       sequelize,
@@ -139,11 +153,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
-        type: Sequelize.INTEGER,
-      },
-      userName: {
+      name: {
         type: Sequelize.STRING,
+      },
+      age: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -161,35 +175,9 @@ module.exports = {
 };
 ```
 
-`id`, `createdAt`, `updatedAt` 필드는 정의하지 않아도 자동으로 생성되므로 다음과 같이 수정
+`id`, `createdAt`, `updatedAt` 필드는 정의하지 않아도 자동으로 생성
 
-```javascript
-"use strict";
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Users", {
-      userId: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      userName: {
-        type: Sequelize.STRING,
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-    });
-  },
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Users");
-  },
-};
-```
-
-그리고 `up`과 `down`으로 구분되어 실제 데이터베이스에 적용할 때에는 `up`을, 적용된 내용을 취소할 때에는 `down`을 사용
+그리고 `up`과 `down`으로 구분되어 실제 데이터베이스에 적용할 때에는 `up`을, 적용된 내용을 취소할 때에는 `down`을 실행
 
 실제 데이터베이스에 반영하기 위해 마이그레이션 진행
 
@@ -204,9 +192,11 @@ mysql> DESC Users;
 +-----------+--------------+------+-----+---------+----------------+
 | Field     | Type         | Null | Key | Default | Extra          |
 +-----------+--------------+------+-----+---------+----------------+
-| userId    | int          | NO   | PRI | NULL    | auto_increment |
-| userName  | varchar(255) | YES  |     | NULL    |                |
+| id        | int          | NO   | PRI | NULL    | auto_increment |
+| name      | varchar(255) | YES  |     | NULL    |                |
+| age       | int          | YES  |     | NULL    |                |
 | createdAt | datetime     | NO   |     | NULL    |                |
+| updatedAt | datetime     | NO   |     | NULL    |                |
 +-----------+--------------+------+-----+---------+----------------+
 ```
 
@@ -214,4 +204,137 @@ mysql> DESC Users;
 
 ```bash
 $ sequelize db:migrate:undo
+```
+
+## CRUD
+
+Sequelize는 데이터베이스에서 데이터를 쿼리하는 데 도움이 되는 다양한 방법을 제공  
+이를 통해 CRUD를 간단하게 구현이 가능
+
+먼저 앞에서 정의한 모델을 불러오는 것이 필요
+
+```javascript
+const { User } = require("./models");
+```
+
+### CREATE
+
+`Model.create({key: value})`
+
+```javascript
+(async () => {
+  const user = await User.create({
+    name: "Jiheon Lee",
+    age: 23,
+  });
+
+  console.log(user.name); // Jiheon Lee
+  console.log(user.age); // 23
+})();
+```
+
+```bash
+mysql> SELECT * FROM Users;
++----+------------+------+---------------------+---------------------+
+| id | name       | age  | createdAt           | updatedAt           |
++----+------------+------+---------------------+---------------------+
+|  1 | Jiheon Lee |   23 | 2021-10-06 10:25:45 | 2021-10-06 10:25:45 |
++----+------------+------+---------------------+---------------------+
+```
+
+### READ
+
+- `Model.findAll()`
+- `Model.findOne({ where: { id: 1 } })`
+
+```javascript
+(async () => {
+  const users = await User.findAll();
+  console.log(users);
+})();
+```
+
+```bash
+[
+  User {
+    dataValues: {
+      id: 1,
+      name: 'Jiheon Lee',
+      age: 23,
+      createdAt: 2021-10-06T01:25:45.000Z,
+      updatedAt: 2021-10-06T01:25:45.000Z
+    },
+    _previousDataValues: {
+      id: 1,
+      name: 'Jiheon Lee',
+      age: 23,
+      createdAt: 2021-10-06T01:25:45.000Z,
+      updatedAt: 2021-10-06T01:25:45.000Z
+    },
+    _changed: Set(0) {},
+    _options: {
+      isNewRecord: false,
+      _schema: null,
+      _schemaDelimiter: '',
+      raw: true,
+      attributes: [Array]
+    },
+    isNewRecord: false
+  }
+]
+```
+
+> findAll한 데이터에서 dataValues 이외의 정보 제외
+>
+> 1. `Model.findAll({ raw: true })`  
+>    dataValues만 리턴되지만, include할 연관 테이블이 없을 때 사용
+> 2. `const users = await User.findAll().map(el => el.get({ plain: true }));`  
+>    위와 동일하게 dataValues만 리턴, include할 연관 테이블이 있을 때 추천
+
+### UPDATE
+
+`Model.update()`
+
+```javascript
+(async () => {
+  await User.update(
+    { name: "John" },
+    {
+      where: {
+        id: 1,
+      },
+    }
+  );
+})();
+```
+
+### DELETE
+
+`Model.destroy({ where: { id: 1 } })`
+
+```javascript
+(async () => {
+  await User.destroy({
+    where: {
+      id: 1,
+    },
+  });
+})();
+```
+
+## 기존 DB에서 모델 추출
+
+ORM을 사용하고자 하는데 기존 DB의 모든 테이블을 모델로 정의하기에는 번거로움  
+Sequelize에서는 해당 기능을 제공하고 있지 않지만, [sequelize-auto](https://github.com/sequelize/sequelize-auto)에서 제공
+
+### sequelize-auto 설치
+
+```bash
+$ npm install -g sequelize-auto
+```
+
+### sequelize-auto 사용법
+
+```bash
+$ sequelize-auto -h localhost -d <database> -u <user> -x [password] -p [port]  --dialect [dialect] -c [/path/to/config] -o [/path/to/models] -t [tableName]
 ```
