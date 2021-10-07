@@ -98,7 +98,7 @@ $ sequelize init
 > Sequelize는 `SELECT` 또는 `INSERT` 때의 자동으로 `createdAt`과 `updatedAt`을 함께 적용, 이를 Off 할 때의 설정  
 > `define: { timestamps: true }`
 
-## Sequelize 모델 정의 및 마이그레이션
+## 모델 정의 및 마이그레이션
 
 Sequelize CLI를 통해 모델을 정의하고 마이그레이션을 통해 실제 데이터베이스에 반영이 가능
 
@@ -338,3 +338,159 @@ $ npm install -g sequelize-auto
 ```bash
 $ sequelize-auto -h localhost -d <database> -u <user> -x [password] -p [port]  --dialect [dialect] -c [/path/to/config] -o [/path/to/models] -t [tableName]
 ```
+
+## 환경변수 관리 및 CLI 명령어 관리
+
+`sequelize-cli`를 통해 생성된 `config/config.json`는 연결할 데이터베이스에 대한 정보들을 포함하는데, 노출되면 이후 큰 문제가 발생할 수 있으므로 `.env`로 환경변수를 관리가 필요
+
+그리고 `sequelize-cli`를 사용하려면 `config/config.json`이 존재하는 경로 내에서만 가능하므로 경로 이동없이 프로젝트 루트 경로에서도 바로 실행할 수 있도록 수정이 필요
+
+### 환경변수 관리
+
+먼저 프로젝트 구조화를 위해 `sequelize-cli`를 통해 생성된 파일들을 `src/db/` 안에 이동
+
+```
+|-- src
+     |-- db
+         |-- config
+         |   `-- config.json
+         |-- migrations
+         |-- models
+         |   `-- index.js
+         |-- seeders
+```
+
+`config.json` 파일명을 `index.js`로 변경한 후 설정들을 `export`하도록 변경합니다. 이때 환경변수를 `.env` 파일에서 관리하기 위해 [dotenv](https://www.npmjs.com/package/dotenv) 설치가 필요
+
+```bash
+$ npm install dotenv
+```
+
+- `config/index.js`
+
+```javascript
+require("dotenv").config();
+const env = process.env;
+
+const development = {
+  username: env.DEV_DB_USERNAME,
+  password: env.DEV_DB_PASSWORD,
+  database: env.DEV_DB_DATABASE,
+  host: env.DEV_DB_HOST,
+  dialect: env.DEV_DB_DIALECT,
+  port: env.DEV_DB_PORT,
+  timezone: env.DB_TIMEZONE,
+};
+
+const production = {
+  username: env.PROD_DB_USERNAME,
+  password: env.PROD_DB_PASSWORD,
+  database: env.PROD_DB_DATABASE,
+  host: env.PROD_DB_HOST,
+  dialect: env.PROD_DB_DIALECT,
+  port: env.PROD_DB_PORT,
+  timezone: env.DB_TIMEZONE,
+};
+
+const test = {
+  username: env.TEST_DB_USERNAME,
+  password: env.TEST_DB_PASSWORD,
+  database: env.TEST_DB_DATABASE,
+  host: env.TEST_DB_HOST,
+  dialect: env.TEST_DB_DIALECT,
+  port: env.TEST_DB_PORT,
+  timezone: env.DB_TIMEZONE,
+};
+
+module.exports = { development, production, test };
+```
+
+기존 `config.json`을 불러오던 `models/index.js`를 수정
+
+- `models/index.js`
+
+```javascript
+"use strict";
+
+const fs = require("fs");
+const path = require("path");
+const Sequelize = require("sequelize");
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || "development";
+// const config = require(__dirname + "/../config/config.json")[env];
+const config = require(__dirname + "/../config")[env];
+const db = {};
+
+// let sequelize;
+// if (config.use_env_variable) {
+//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+// } else {
+//   sequelize = new Sequelize(
+//     config.database,
+//     config.username,
+//     config.password,
+//     config
+//   );
+// }
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
+
+fs.readdirSync(__dirname)
+  .filter((file) => {
+    return (
+      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+    );
+  })
+  .forEach((file) => {
+    const model = require(path.join(__dirname, file))(
+      sequelize,
+      Sequelize.DataTypes
+    );
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+```
+
+주석 처리가 되어있는 코드가 이전 코드이며, `config.use_env_variable`은 `npm script`에서 실행 환경을 명시해준다면 필요없는 코드이기에 제거
+
+```javascript
+// const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config")[process.env.NODE_ENV];
+```
+
+위의 코드에서 다음과 같이 한 줄로도 표현이 가능
+
+### CLI 명령어 관리
+
+프로젝트 내에 어느곳에서도 `sequelize-cli` 명령어를 사용할 수 있도록 경로 설정이 필요
+
+따라서 새로운 `.sequelizerc` 파일을 프로젝트 루트 경로내에 생성
+
+```javascript
+const path = require("path");
+
+module.exports = {
+  config: path.join(__dirname + "/src/db/config"),
+  "migrations-path": path.join(__dirname, "/src/db/migrations"),
+  "seeders-path": path.join(__dirname, "/src/db/seeders"),
+  "models-path": path.join(__dirname, "/src/db/models"),
+};
+```
+
+> ERROR: Please install mysql2 package manually  
+> 다음과 같은 에러가 발생한다면, sequelize-cli를 global로 설치하여 발생한 문제이다. mysql2 또한 global로 설치가 필요하다.  
+> `$ npm install -g mysql2`
