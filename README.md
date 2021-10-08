@@ -19,7 +19,8 @@
 
 ## Front-end
 
-- [Javascript (ES6)](https://github.com/ideclan/TIL/blob/master/Javascript/ES6.md)
+- [JavaScript (ES6)](https://github.com/ideclan/TIL/blob/master/JavaScript/ES6.md)
+- [TypeScript](https://github.com/ideclan/TIL/blob/master/TypeScript/TypeScript.md)
 - [Vue.js](https://github.com/ideclan/TIL/blob/master/Vue.js/Vue.js.md)
 - [Bootstrap](https://github.com/ideclan/TIL/blob/master/Bootstrap/Bootstrap.md)
 
