@@ -155,7 +155,9 @@ module.exports = {
 
 ## Seeder 실행
 
-`Seeder` 를 작성후 반영하기 위해 아래와 같이 명령어 실행
+`Seeder` 를 작성 후 반영하기 위해 아래와 같이 상황에 맞는 명령어 실행
+
+### 단일 실행
 
 ```bash
 $ sequelize db:seed --seed <파일명>
@@ -169,14 +171,16 @@ $ sequelize db:seed --seed <파일명>
 $ sequelize db:seed:undo
 ```
 
-> `seeders` 내의 모든 파일들을 실행할 때
->
-> ```bash
-> $ sequelize db:seed:all
-> ```
->
-> 반영된 모든 내용을 취소하여 되돌릴 때
->
-> ```bash
-> $ sequelize db:seed:undo:all
-> ```
+### 복수 실행
+
+`seeders` 내의 모든 파일들을 실행할 때
+
+```bash
+$ sequelize db:seed:all
+```
+
+반영된 모든 내용을 취소하여 되돌릴 때
+
+```bash
+$ sequelize db:seed:undo:all
+```
