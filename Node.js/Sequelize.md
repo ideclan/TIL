@@ -71,6 +71,9 @@ $ sequelize init
     //   "freezeTableName": true,
     //   "timestamps": false
     // }
+    // dialectOptions: {
+    //   decimalNumbers: true,
+    // },
   },
   "test": {
     "username": "root",
@@ -97,6 +100,9 @@ $ sequelize init
 
 > Sequelize는 `SELECT` 또는 `INSERT` 때의 자동으로 `createdAt`과 `updatedAt`을 함께 적용, 이를 Off 할 때의 설정  
 > `define: { timestamps: true }`
+
+> 쿼리 결과 값이 `String`인 이슈
+> `dialectOptions: { decimalNumbers: true }`
 
 ## 모델 정의 및 마이그레이션
 
