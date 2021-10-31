@@ -1,33 +1,81 @@
-# Today I Learned
+# 📚 Today I Learned
 
-오늘 배운, 알게 된, 학습한 내용을 정리
+꾸준히 성장하기 위해 하루동안 학습한 내용이나 개발 관련하여 경험한 내용을 기록합니다.
 
-## Back-end
+> "기록은 기억을 남긴다."
+>
+> 발타사르 그라시안 이 모랄레스
 
-- [Node.js](https://github.com/jiheonn/TIL/tree/master/Node.js)
-- [Express](https://github.com/jiheonn/TIL/tree/master/Express)
-- [Sequelize](https://github.com/ideclan/TIL/blob/master/Node.js/Sequelize.md)
-- [TDD](https://github.com/ideclan/TIL/blob/master/Node.js/TDD.md)
+## 📎 목차
 
-## DevOps
+### Bootstrap
 
-- [MongoDB](https://github.com/ideclan/TIL/blob/master/MongoDB/MongoDB.md)
-- [PostgreSQL](https://github.com/ideclan/TIL/blob/master/PostgreSQL/PostgreSQL.md)
-- [Redis](https://github.com/ideclan/TIL/blob/master/Redis/Redis.md)
-- [Github Action](https://github.com/ideclan/TIL/blob/master/GithubAction/GithubAction.md)
-- [Travis CI](https://github.com/ideclan/TIL/blob/master/TravisCI/TravisCI.md)
+- [Bootstrap 기초](https://github.com/jiheonn/TIL/blob/master/Bootstrap/bootstrap.md)
 
-## Front-end
+### Express
 
-- [JavaScript (ES6)](https://github.com/ideclan/TIL/blob/master/JavaScript/ES6.md)
-- [TypeScript](https://github.com/ideclan/TIL/blob/master/TypeScript/TypeScript.md)
-- [Vue.js](https://github.com/ideclan/TIL/blob/master/Vue.js/Vue.js.md)
-- [Bootstrap](https://github.com/ideclan/TIL/blob/master/Bootstrap/Bootstrap.md)
+- [Express 학습 정리 1](https://github.com/jiheonn/TIL/blob/master/Express/express-01.md)
+- [Express 학습 정리 2](https://github.com/jiheonn/TIL/blob/master/Express/express-02.md)
 
-## Etc
+### Git
 
-- [Git](https://github.com/ideclan/TIL/blob/master/Git/Git.md)
-- [Linux](https://github.com/ideclan/TIL/blob/master/Linux/Linux.md)
-- [Java](https://github.com/ideclan/TIL/blob/master/Java/Java.md)
-- [Python](https://github.com/jiheonn/TIL/tree/master/Python)
-- [VSCode Extension](https://github.com/jiheonn/TIL/blob/master/VSCode/Extension.md)
+- [Git 명령어 정리](https://github.com/jiheonn/TIL/blob/master/Git/git.md)
+- [GitHub Action with Python](https://github.com/jiheonn/TIL/blob/master/Git/github-action.md)
+
+### Java
+
+- [Java 학습 정리](https://github.com/jiheonn/TIL/blob/master/Java/java.md)
+
+### JavaScript
+
+- [ES6 학습 정리](https://github.com/jiheonn/TIL/blob/master/JavaScript/es6.md)
+
+### Linux
+
+- [Linux 명령어 정리](https://github.com/jiheonn/TIL/blob/master/Linux/linux.md)
+
+### MongoDB
+
+- [MongoDB with Node.js](https://github.com/jiheonn/TIL/blob/master/MongoDB/MongoDB.md)
+
+### Node.js
+
+- [Node.js 학습 정리](https://github.com/jiheonn/TIL/blob/master/Node.js/nodejs.md)
+- [테스트 주도 개발 (TDD)](https://github.com/jiheonn/TIL/blob/master/Node.js/tdd.md)
+- [이미지 리사이징 서버 구현](https://github.com/jiheonn/TIL/blob/master/Node.js/image-resizing.md)
+- [웹소켓을 통한 실시간 인터랙션 구현](https://github.com/jiheonn/TIL/blob/master/Node.js/websocket.md)
+
+### PostgreSQL
+
+- [PostgreSQL 기초](https://github.com/jiheonn/TIL/blob/master/PostgreSQL/postgresql.md)
+
+### Python
+
+- [Black](https://github.com/jiheonn/TIL/blob/master/Python/black.md)
+- [Type Annotation (타입 주석)](https://github.com/jiheonn/TIL/blob/master/Python/type-annotation.md)
+
+### Redis
+
+- [Redis 기초](https://github.com/jiheonn/TIL/blob/master/Redis/redis.md)
+
+### Sequelize
+
+- [Sequelize ORM 사용 방법](https://github.com/jiheonn/TIL/blob/master/Sequelize/sequelize.md)
+- [Sequelize Seed](https://github.com/jiheonn/TIL/blob/master/Sequelize/sequelize-seed.md)
+- [Sequelize Associate](https://github.com/jiheonn/TIL/blob/master/Sequelize/sequelize-associate.md)
+
+### TravisCI
+
+- [Travis CI 사용 방법](https://github.com/jiheonn/TIL/blob/master/TravisCI/travis-ci.md)
+
+### TypeScript
+
+- [Express TypeScript 설정 방법](https://github.com/jiheonn/TIL/blob/master/TypeScript/typescript.md)
+
+### VSCode
+
+- [유용한 VSCode Extension 정리](https://github.com/jiheonn/TIL/blob/master/VSCode/extension.md)
+
+### Vue.js
+
+- [Do it! Vue.js To-Do List 구현](https://github.com/jiheonn/TIL/blob/master/Vue.js/vuejs.md)
