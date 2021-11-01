@@ -36,7 +36,7 @@
 
 ### MongoDB
 
-- [MongoDB with Node.js](https://github.com/jiheonn/TIL/blob/master/MongoDB/MongoDB.md)
+- [MongoDB with Node.js](https://github.com/jiheonn/TIL/blob/master/MongoDB/mongodb.md)
 
 ### Node.js
 
