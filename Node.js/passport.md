@@ -50,7 +50,7 @@ SESSION_SECRET=d4SDLFKD24SDfd3s
 |-- .env
 ```
 
-### Session
+### Session 설정
 
 `ES6` 문법 기준으로 `auth/session.js` 파일을 작성합니다.
 
@@ -98,7 +98,7 @@ export default (app) => {
 };
 ```
 
-## Passport
+### Passport 설정
 
 코드 내의 주석으로 표기한 순서대로 이해하시면 좋을 것 같습니다.
 
@@ -127,7 +127,7 @@ export default (app) => {
    `HTTP request` 객체에 붙여서 `req.user`를 반환합니다.
 
 이를 정리하면 `serializeUser()`는 세션에 사용자 키 값 `id`만 저장하고,  
-`deserializeUser()`는 세션에 저장된 `id`를 이용해서, 매번 DB에 추가로 필요한 사용자 정보를 `select`하여 `req.user`를 반환한다.
+`deserializeUser()`는 세션에 저장된 `id`를 이용해서, 매번 DB에 추가로 필요한 사용자 정보를 `select`하여 `req.user`를 반환합니다.
 
 ```javascript
 // auth/passport.js
@@ -205,8 +205,101 @@ export default (app) => {
 
 ## 로그인 및 로그아웃 API
 
+앞에서 진행했던 프로젝트 파일 구조에서 `src/` 내에 `controllers/`, `middlewares/`, `routes/`를 추가하여 각 디렉토리에 `auth.js`를 생성합니다.
+
+> API 요청에 대한 라우팅 로직은 `routes/`에서만, 비즈니스 로직은 `controllers/`로 분리함으로써 가독성과 유지보수에 용이해집니다.
+
+```
+|-- src
+     |-- auth
+     |   `-- passport.js
+     |   `-- session.js
+     |-- controllers
+     |   `-- auth.js
+     |-- middlewares
+     |   `-- auth.js
+     |-- routes
+     |   `-- auth.js
+     |-- app.js
+|-- .env
+```
+
+### 로그인 인증 여부 확인
+
+로그인 인증 여부 확인을 위한 미들웨어 함수를 `middlewares/` 내에 `auth.js`에 추가합니다.  
+`req.isAuthenticated()` 함수는 로그인이 되어있는 경우, `true`를 반환합니다.
+
+따라서, 로그인이 필요한 요청과 필요하지 않은 요청에 대하여 각 미들웨어를 사용하면 됩니다.  
+그리고 `next()`를 통해 다음 미들웨어 함수 로직을 수행하도록 합니다.
+
+예를들어, 마이페이지 내 정보 조회와 같이 사용자 로그인이 필요한 경우 `isLoggedIn`를  
+이미 로그인이 되어있는데 로그인 페이지에 접근한 경우 `isNotLoggedIn`를 사용합니다.
+
+```javascript
+// middlewares/auth.js
+
+export const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.redirect("/auth/login");
+  }
+};
+
+export const isNotLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+};
+```
+
+### 로그인 및 로그아웃 구현
+
+로그인 및 로그아웃 관련 라우팅 로직을 `routes/` 내에 `auth.js`에 추가합니다.  
+앞에서 작성한 로그인 인증 여부 확인 미들웨어를 `import`하여  
+`router.get("/", middleware)` 와 같이 미들웨어 함수를 사용할 수 있습니다.
+
+그리고 로그인 인증 요청에 대한 라우팅은 `passport.authenticate()` 미들웨어 함수를 사용합니다. 이는 `'local'` 인자 값을 주어 앞에서 작성한 `new LocalStrategy()` 를 통해 세운 로컬 전략의 함수를 호출합니다.
+
+- `successRedirect` : 성공 시 redirect 경로
+- `failureRedirect` : 실패 시 redirect 경로
+- `failureFlash` : 실패 시 flash 메세지 여부, 로컬 전략의 콜백 함수에서 받은 메세지를 사용해 에러 메세지를 출력
+
+> `'local'`이 아닌 소셜 로그인 관련 전략을 세웠다면,  
+> `'kakao'`, `'naver'`를 인자 값으로 넘겨줍니다.
+
+```javascript
+// routes/auth.js
+
+import express from "express";
+import passport from "passport";
+
+import authController from "../controllers/auth";
+import { isLoggedIn, isNotLoggedIn } from "../middlewares/auth";
+
+const router = express.Router();
+
+/* /auth */
+router.get("/login", isNotLoggedIn, authController.displayLogin);
+
+router.post(
+  "/login",
+  isNotLoggedIn,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/auth/login",
+    failureFlash: true,
+  })
+);
+
+router.get("/logout", isLoggedIn, authController.logout);
+
+export default router;
+```
+
 # References
 
 - [dotenv](https://github.com/motdotla/dotenv)
 - [express-session](https://github.com/expressjs/session)
-- [(Node.js) Serialize 와 Deserialize 로그인 정보 저장](https://heewon26.tistory.com/51)
