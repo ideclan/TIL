@@ -48,15 +48,10 @@ Node.js 내장 모듈이며, 여러 해시 함수를 통한 암호화 기능을 
 - `digest()` : 인코딩 방식
 
 ```javascript
-const crypto = require("crypto");
+import crypto from "crypto";
 
 const createHashedPassword = (password) => {
-  const hashedPassword = crypto
-    .createHash("sha512")
-    .update(password)
-    .digest("base64");
-
-  return hashedPassword;
+  return crypto.createHash("sha512").update(password).digest("base64");
 };
 
 console.log(createHashedPassword("1234"));
@@ -87,24 +82,25 @@ console.log(createHashedPassword("1234"));
 
 ## 비밀번호 암호화 보완하기
 
-단방향 암호화에서 많이 사용되는 `crypto` 모듈의 `pbkdf2()` 메소드를 사용합니다.
+`salt` 생성에서는 `crypto` 모듈의 `randomBytes()`, 비밀번호 암호화 또는 검증에서는 `pbkdf2()` 메소드를 사용할 것 입니다.
 
-인자로는 총 5개로 `해싱할 값`, `salt`, `해시 함수 반복 횟수`, `해시 값 길이`, `해시 알고리즘` 입니다.
-
-> `해시 함수 반복 횟수`는 딱 떨어지는 `100000` 보다는 `104906` 와 같은 수를 넣는게 좋다고 합니다.
-
-### Salt 생성 함수
-
-`salt` 값은 `crypto` 모듈의 `randomBytes()` 메소드를 통해 64바이트 길이로 생성합니다. `buffer` 형식을 가지고 있으므로 `base64` 문자열로 변경하면 랜덤 문자열이 됩니다.
-
-그리고 이후 검증을 위해 회원가입 시 `password`와 함께 DB에 저장이 필요하다.
+앞으로 구현할 함수들을 정의할 때 `new Promise()`로 감싸주려고 하였으나, Node.js의 내장 모듈인 `util`의 `promisify()` 를 사용하면 좀 더 가독성 좋은 코드를 작성할 수 있습니다.
 
 ```javascript
 import util from "util";
 import crypto from "crypto";
 
 const randomBytesPromise = util.promisify(crypto.randomBytes);
+const pbkdf2Promise = util.promisify(crypto.pbkdf2);
+```
 
+### Salt 생성
+
+`salt` 값은 `crypto` 모듈의 `randomBytes()` 메소드를 통해 64바이트 길이로 생성합니다. `buffer` 형식을 가지고 있으므로 `base64` 문자열로 변경하면 랜덤 문자열이 됩니다.
+
+> `salt`는 이후 검증을 위해 회원가입 시 `password`와 함께 DB에 저장이 필요합니다.
+
+```javascript
 const createSalt = async () => {
   const buf = await randomBytesPromise(64);
 
@@ -112,21 +108,36 @@ const createSalt = async () => {
 };
 ```
 
-### 비밀번호 암호화 함수
+### 비밀번호 암호화
+
+단방향 암호화에서 많이 사용되는 `crypto` 모듈의 `pbkdf2()` 메소드를 사용합니다.
+
+인자로는 총 5개로 `해싱할 값`, `salt`, `해시 함수 반복 횟수`, `해시 값 길이`, `해시 알고리즘` 입니다.
+
+> `해시 함수 반복 횟수`는 딱 떨어지는 `100000` 보다는 `104906` 와 같은 수를 넣는게 좋다고 합니다.
+
+`salt` 생성을 위해 앞에서 정의한 `createSalt()` 함수를 사용합니다.  
+`key` 또한 `buffer` 형식을 가지고 있으므로 `base64` 문자열로 변경해줍니다.
 
 ```javascript
-const pbkdf2Promise = util.promisify(crypto.pbkdf2);
-
 export const createHashedPassword = async (password) => {
   const salt = await createSalt();
-  const key = await pbkdf2Promise(password, salt, 99999, 64, "sha512");
+  const key = await pbkdf2Promise(password, salt, 104906, 64, "sha512");
   const hashedPassword = key.toString("base64");
 
   return { hashedPassword, salt };
 };
 ```
 
-### 비밀번호 검증 함수
+### 비밀번호 검증
+
+- `password` : 로그인 인증할 때의 사용자가 입력한 비밀번호
+- `userSalt` : DB에 저장되어있는 사용자의 `salt`
+- `userPassword` : DB에 저장되어있는 사용자의 암호화된 비밀번호(해시 값)
+
+단방향 암호화이므로 복호화는 진행할 수 없습니다. 따라서 비밀번호 암호화할 때의 동일한 방법으로 암호화를 진행하여 비교합니다. 이때 `salt`는 기존에 생성된 값을 사용해야 합니다.
+
+만약 일치한다면 `true`, 일치하지 않는다면 `false`를 반환하도록 합니다.
 
 ```javascript
 export const verifyPassword = async (password, userSalt, userPassword) => {
@@ -136,6 +147,56 @@ export const verifyPassword = async (password, userSalt, userPassword) => {
   if (hashedPassword === userPassword) return true;
   return false;
 };
+```
+
+`verifyPassword()` 함수의 사용 예시는 다음과 같습니다.  
+이는 `passport`의 로그인 인증을 위한 콜백함수에서의 사용 예시입니다.
+
+```javascript
+passport.use(
+  new LocalStrategy(
+    {
+      session: true, // 세션 저장 여부
+      usernameField: "id", // form > input name
+      passwordField: "password",
+    },
+    async (id, password, done) => {
+      try {
+        // 회원정보 조회
+        const user = await User.findOne({
+          where: {
+            email: id,
+          },
+          raw: true,
+        });
+
+        // 회원정보가 없는 경우
+        if (!user) {
+          done(null, false, {
+            message: "존재하지 않는 아이디입니다.",
+          });
+        }
+
+        const verified = await verifyPassword(
+          password,
+          user.salt,
+          user.password
+        );
+        // 비밀번호가 일치하지 않는 경우
+        if (!verified) {
+          done(null, false, {
+            message: "비밀번호가 일치하지 않습니다.",
+          });
+        }
+        done(null, user); // serializeUser로 user 전달
+      } catch {
+        done(null, false, {
+          message: "서버의 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        });
+      }
+    }
+  )
+);
 ```
 
 # References
