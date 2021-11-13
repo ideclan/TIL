@@ -19,11 +19,12 @@ $ npm install -g typescript
 ```json
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "CommonJS",
-    "outDir": "./dist"
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "dist",
+    "strict": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
 ```
@@ -74,9 +75,9 @@ $ npm install --save-dev @types/node @types/express ts-node typescript
 `package.json` 내에 `scripts`를 추가합니다.
 
 - `dev` : 주로 개발 환경에서 사용하며, `ts-node` 실행 결과를 `nodemon`으로 넘겨주어 함께 사용이 가능합니다.
-- `copyfiles` : `tsc`로 빌드 시 `.ts`가 아닌 파일들은 제외되므로, 복사하여 추가하는 부분입니다.
-- `build` : `copyfiles`와 함께 프로젝트 빌드를 진행합니다.
-- `start` : 빌드된 파일을 실행합니다.
+- `copy-files` : `tsc`로 빌드 시 `.ts`가 아닌 파일들은 제외되므로, 정적 파일들을 복사하여 추가하는 부분입니다.
+- `build` : `tsc` 명령어를 통해 컴파일하고 `copy-files`와 함께 빌드를 진행합니다.
+- `start` : 빌드된 `dist/bin/www.js` 파일을 실행합니다.
 
 ```json
 {
