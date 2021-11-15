@@ -44,6 +44,7 @@
 - [테스트 주도 개발 (TDD)](https://github.com/jiheonn/TIL/blob/master/Node.js/tdd.md)
 - [이미지 리사이징 서버 구현](https://github.com/jiheonn/TIL/blob/master/Node.js/image-resizing.md)
 - [웹소켓을 통한 실시간 인터랙션 구현](https://github.com/jiheonn/TIL/blob/master/Node.js/websocket.md)
+- [Node.js에서 ES6를 위한 Babel 사용 방법](https://github.com/jiheonn/TIL/blob/master/Node.js/babel.md)
 - [Passport를 통한 로그인 인증 구현](https://github.com/jiheonn/TIL/blob/master/Node.js/passport.md)
 - [Crypto로 비밀번호 암호화하기](https://github.com/jiheonn/TIL/blob/master/Node.js/crypto.md)
 
