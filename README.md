@@ -16,6 +16,7 @@
 
 - [Express 학습 정리 1](https://github.com/jiheonn/TIL/blob/master/Express/express-01.md)
 - [Express 학습 정리 2](https://github.com/jiheonn/TIL/blob/master/Express/express-02.md)
+- [Express에서 ES6를 위한 Babel 설정 방법](https://github.com/jiheonn/TIL/blob/master/Express/babel.md)
 
 ### Git
 
