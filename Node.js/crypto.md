@@ -4,6 +4,10 @@ Node.js 내장 모듈이며, 여러 해시 함수를 통한 암호화 기능을 
 
 > The crypto module provides cryptographic functionality that includes a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify functions.
 
+## Crypto vs Bcrypt
+
+[Bcrypt](https://github.com/kelektiv/node.bcrypt.js)는 암호를 해시하는 데 도움이 되는 라이브러리입니다. 해싱에 느리고 비용이 많이 드는 Blowfish 알고리즘으로 구현되었습니다. 따라서 강력한 보안이 필요로 할 때는 `Bcrypt`를 사용하면 좋을 것 같습니다.
+
 ## 해시(hash)
 
 - **해시(hash)** : 해시 함수에 의해 얻어지는 값
@@ -24,10 +28,6 @@ Node.js 내장 모듈이며, 여러 해시 함수를 통한 암호화 기능을 
 | 양방향 |   O    |   O    | 대칭키(비공개키), 비대칭키(공개키) |
 
 사용자의 비밀번호는 본인만이 알 수 있어야하고, 만약 비밀번호를 잃어버린 경우 복호화하는 과정에서 노출되기 때문에 대부분 재설정을 할 수 있도록 한다. 따라서 **단방향 암호화 방식을 사용한다**.
-
-## Crypto vs Bcrypt
-
-[Bcrypt](https://github.com/kelektiv/node.bcrypt.js)는 암호를 해시하는 데 도움이 되는 라이브러리입니다. 해싱에 느리고 비용이 많이 드는 Blowfish 알고리즘으로 구현되었습니다. 따라서 강력한 보안이 필요로 할 때 사용하면 좋을 것 같습니다.
 
 ## 해시 알고리즘(hash algorism)
 
