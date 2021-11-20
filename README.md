@@ -23,6 +23,8 @@
 - [Git 명령어 정리](https://github.com/jiheonn/TIL/blob/master/Git/git.md)
 - [GitHub Action with Python](https://github.com/jiheonn/TIL/blob/master/Git/github-action.md)
 - [GitHub 으로 협업하는 방법](https://github.com/jiheonn/TIL/blob/master/Git/github-collaborate.md)
+- [Commit message 규칙](https://github.com/jiheonn/TIL/blob/master/Git/git-commit.md)
+- [Branch 종류 & 사용 방법](https://github.com/jiheonn/TIL/blob/master/Git/git-branch.md)
 
 ### Java
 
