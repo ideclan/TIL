@@ -46,6 +46,8 @@ ReactDOM.render(
 reportWebVitals();
 ```
 
+`App` 함수형 컴포넌트와 클래스형 컴포넌트 방식
+
 ```javascript
 // App.js
 
@@ -67,3 +69,42 @@ class App extends Component {
   }
 }
 ```
+
+전역 스타일과 `App` 컴포넌트에 관련된 스타일
+
+`index.css`는 모든 컴포넌트에 적용하기 위해 정의하며,  
+`App.css`는 해당 컴포넌트에서만 적용할 스타일을 정의한다.
+
+```javascript
+// index.js
+
+import "./index.css";
+
+// App.js
+
+import "./App.css";
+```
+
+## react app 배포
+
+개발 환경에서 실행하여 개발을 진행한 후, 배포하는 과정에서는 불필요한 리소스 제거와 브라우저에 적합한 코드로 변경이 필요하다. 이를 `build`라고 하여 아래와 같이 진행한다.
+
+```bash
+$ npm run build
+```
+
+프로젝트 루트 경로 내에 `build/`가 생성된다.
+
+빌드된 파일로 서버 실행은
+
+```bash
+$ npx serve -s build
+
+# 또는
+
+$ npm install -g serve
+$ serve -s build
+```
+
+> 크롬 개발자 도구 -> Network에서 캐시 비우기 및 강력 새로고침한 결과  
+> 개발 환경에서의 실행한 리소스 용량 `2.2 MB`에서 빌드 후 실행한 리소스 용량 `125 KB`로 많이 줄어든 것을 확인할 수 있다.
