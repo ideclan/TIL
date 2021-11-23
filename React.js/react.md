@@ -108,3 +108,150 @@ $ serve -s build
 
 > 크롬 개발자 도구 -> Network에서 캐시 비우기 및 강력 새로고침한 결과  
 > 개발 환경에서의 실행한 리소스 용량 `2.2 MB`에서 빌드 후 실행한 리소스 용량 `125 KB`로 많이 줄어든 것을 확인할 수 있다.
+
+## 컴포넌트 만들기
+
+`header`, `nav`, `article` 태그 부분들을 컴포넌트로 만들어 사용한다.
+
+```html
+<html>
+  <body>
+    <header>
+      <h1>WEB</h1>
+      world wide web!
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="1.html">HTML</a></li>
+        <li><a href="2.html">CSS</a></li>
+        <li><a href="3.html">JavaScript</a></li>
+      </ul>
+    </nav>
+
+    <article>
+      <h2>HTMl</h2>
+      HTML is HyperText Markup Language.
+    </article>
+  </body>
+</html>
+```
+
+컴포넌트의 사용 방법은 사용자가 정의한 이름인 태그로  
+아래 예제에서의 `Subject` 컴포넌트는 `<Subject></Subject>`로 사용한다.
+
+```javascript
+// App.js
+
+import React, { Component } from "react";
+import "./App.css";
+
+class Subject extends Component {
+  render() {
+    return (
+      <header>
+        <h1>WEB</h1>
+        world wide web!
+      </header>
+    );
+  }
+}
+
+class TOC extends Component {
+  render() {
+    return (
+      <nav>
+        <ul>
+          <li>
+            <a href="1.html">HTML</a>
+          </li>
+          <li>
+            <a href="2.html">CSS</a>
+          </li>
+          <li>
+            <a href="3.html">JavaScript</a>
+          </li>
+        </ul>
+      </nav>
+    );
+  }
+}
+
+class Content extends Component {
+  render() {
+    return (
+      <article>
+        <h2>HTML</h2>
+        HTML is HyperText Markup Language.
+      </article>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Subject></Subject>
+        <TOC></TOC>
+        <Content></Content>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+## Props
+
+`props`는 properties의 줄임말로, 어떠한 값을 컴포넌트에게 전달해줘야 할 때 사용한다.
+
+`{this.props.속성명}`로 사용자 정의 태그의 속성(attribute) 값을 전달받아 사용할 수 있다.
+
+```javascript
+import React, { Component } from "react";
+import "./App.css";
+
+class Subject extends Component {
+  render() {
+    return (
+      <header>
+        <h1>{this.props.title}</h1>
+        {this.props.sub}
+      </header>
+    );
+  }
+}
+
+class Content extends Component {
+  render() {
+    return (
+      <article>
+        <h2>{this.props.title}</h2>
+        {this.props.desc}
+      </article>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Subject title="WEB" sub="world wide web!"></Subject>
+        <Content
+          title="HTML"
+          desc="HTML is HyperText Markup Language."
+        ></Content>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+## React Developer Tools
+
+- [Chrome Extension - React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=ko)
