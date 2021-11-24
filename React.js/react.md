@@ -109,7 +109,7 @@ $ serve -s build
 > 크롬 개발자 도구 -> Network에서 캐시 비우기 및 강력 새로고침한 결과  
 > 개발 환경에서의 실행한 리소스 용량 `2.2 MB`에서 빌드 후 실행한 리소스 용량 `125 KB`로 많이 줄어든 것을 확인할 수 있다.
 
-## 컴포넌트 만들기
+## Component 만들기
 
 `header`, `nav`, `article` 태그 부분들을 컴포넌트로 만들어 사용한다.
 
@@ -255,3 +255,82 @@ export default App;
 ## React Developer Tools
 
 - [Chrome Extension - React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=ko)
+
+## Component 파일로 분리하기
+
+1. `src/` 내에 `components/`를 생성한다.
+2. 앞에서의 `Subject` 컴포넌트를 파일로 분리한다고 가정했을 때, `components/Subject.js` 파일을 생성한다.
+
+```javascript
+import React, { Component } from "react";
+
+class Subject extends Component {
+  render() {
+    return (
+      <header>
+        <h1>{this.props.title}</h1>
+        {this.props.sub}
+      </header>
+    );
+  }
+}
+
+export default Subject;
+```
+
+3. `App.js`에서 파일로 분리한 컴포넌트를 불러온다.
+
+```javascript
+import Subject from "./components/Subject";
+```
+
+## State
+
+컴포넌트가 실행될 때 `constructor()`를 통해 컴포넌트 초기화를 진행한다. 그리고 state 값을 초기화한다. 이때, `render()`보다 먼저 실행이 되어야 한다.
+
+```javascript
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {}
+}
+```
+
+앞에 예제에서 `Subject`, `Content` 컴포넌트로 `props`를 통해 전달할 값들을 state로 관리한다.
+
+`this.state`를 통해 state 값에 접근이 가능하다.
+
+```javascript
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      content: {
+        title: "HTML",
+        desc: "HTML is HyperText Markup Language.",
+      },
+    };
+  }
+  render() {
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+        ></Subject>
+        <TOC></TOC>
+        <Content
+          title={this.state.content.title}
+          desc={this.state.content.desc}
+        ></Content>
+      </div>
+    );
+  }
+}
+```
