@@ -259,9 +259,11 @@ export default App;
 ## Component 파일로 분리하기
 
 1. `src/` 내에 `components/`를 생성한다.
-2. 앞에서의 `Subject` 컴포넌트를 파일로 분리한다고 가정했을 때, `components/Subject.js` 파일을 생성한다.
+2. 앞에 예제에서 `Subject` 컴포넌트를 파일로 분리한다고 가정했을 때, `components/Subject.js` 파일을 생성한다.
 
 ```javascript
+// components/Subject.js
+
 import React, { Component } from "react";
 
 class Subject extends Component {
@@ -281,6 +283,8 @@ export default Subject;
 3. `App.js`에서 파일로 분리한 컴포넌트를 불러온다.
 
 ```javascript
+// App.js
+
 import Subject from "./components/Subject";
 ```
 
@@ -289,6 +293,8 @@ import Subject from "./components/Subject";
 컴포넌트가 실행될 때 `constructor()`를 통해 컴포넌트 초기화를 진행한다. 그리고 state 값을 초기화한다. 이때, `render()`보다 먼저 실행이 되어야 한다.
 
 ```javascript
+// App.js
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -298,11 +304,13 @@ class App extends Component {
 }
 ```
 
-앞에 예제에서 `Subject`, `Content` 컴포넌트로 `props`를 통해 전달할 값들을 state로 관리한다.
+앞에 예제에서 `Subject` 컴포넌트로 `props`를 통해 전달할 값들을 state로 관리한다.
 
-`this.state`를 통해 state 값에 접근이 가능하다.
+`this.state`를 통해 접근이 가능하다.
 
 ```javascript
+// App.js
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -310,10 +318,6 @@ class App extends Component {
       subject: {
         title: "WEB",
         sub: "world wide web!",
-      },
-      content: {
-        title: "HTML",
-        desc: "HTML is HyperText Markup Language.",
       },
     };
   }
@@ -326,11 +330,148 @@ class App extends Component {
         ></Subject>
         <TOC></TOC>
         <Content
-          title={this.state.content.title}
-          desc={this.state.content.desc}
+          title="HTML"
+          desc="HTML is HyperText Markup Language."
         ></Content>
       </div>
     );
   }
 }
 ```
+
+### Key
+
+`this.state`에 `contents`를 추가하여 `TOC` 컴포넌트에 `props`를 통해 `data`로 전달한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+        ></Subject>
+        <TOC data={this.state.contents}></TOC>
+        <Content
+          title="HTML"
+          desc="HTML is HyperText Markup Language."
+        ></Content>
+      </div>
+    );
+  }
+}
+```
+
+전달받은 `data`로 사용할 태그와 함께 `list`를 만든 후 `{tableOfConents}`처럼 사용이 가능하다.
+
+```javascript
+// components/TOC.js
+
+import React, { Component } from "react";
+
+class TOC extends Component {
+  render() {
+    const { data } = this.props;
+    const tableOfContents = data.map((content) => (
+      <li>
+        <a href={`/contents/${content.id}`}>{content.title}</a>
+      </li>
+    ));
+
+    return (
+      <nav>
+        <ul>{tableOfContents}</ul>
+      </nav>
+    );
+  }
+}
+
+export default TOC;
+```
+
+하지만 `Console`에서 다음과 같은 오류가 발생한다.
+
+```
+Warning: Each child in a list should have a unique "key" prop.
+```
+
+각 항목들은 `key`라는 `props`를 가지고 있어야 한다. 따라서 `<li key={}>`에 식별자를 추가한다.
+
+```javascript
+const tableOfContents = data.map((content) => (
+  <li key={content.id}>
+    <a href={`/contents/${content.id}`}>{content.title}</a>
+  </li>
+));
+```
+
+## Event, State, Props and render
+
+`App` 컴포넌트의 `state`가 변경되면 `props`를 통해 해당 값을 전달하여 동적으로 표현이 가능하다.
+
+`state`가 변경될 때, 해당 컴포넌트가 가진 `render()` 함수가 다시 호출된다. 그리고 하위 컴포넌트의 `render()` 함수 또한 모두 동일하게 다시 호출된다.
+
+따라서 `state` 값에 따라 다르게 표현하기 위해 `render()` 함수 내에 조건문을 사용할 수 있다.
+
+```javascript
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "welcome",
+      welcome: {
+        title: "Welcome",
+        desc: "Hello, React!!!",
+      },
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    let _title, _desc;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+    } else if (this.state.mode === "read") {
+      _title = this.state.contents[0].title;
+      _desc = this.state.contents[0].desc;
+    }
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+        ></Subject>
+        <TOC data={this.state.contents}></TOC>
+        <Content title={_title} desc={_desc}></Content>
+      </div>
+    );
+  }
+}
+```
+
+`this.state`에 `mode`를 추가하여 해당 값에 따라 다른 `title`과 `desc`를 갖도록 한다.
