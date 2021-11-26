@@ -475,3 +475,111 @@ class App extends Component {
 ```
 
 `this.state`에 `mode`를 추가하여 해당 값에 따라 다른 `title`과 `desc`를 갖도록 한다.
+
+### Event
+
+JavaScript에서의 Event는 `onclick=""`으로 사용하지만 React에서는 `onClick={}`으로 사용한다.
+
+파라미터 `e`는 이벤트 객체이다.
+
+**이벤트 객체(event object)**
+
+특정 타입의 이벤트와 관련이 있는 객체
+
+- 해당 타입의 이벤트에 대한 상세 정보를 저장
+- 모든 이벤트 객체는 이벤트의 타입을 나타내는 `type` 프로퍼티와 이벤트의 대상을 나타내는 `target` 프로퍼티를 가진다.
+
+```javascript
+render() {
+    return (
+      <div className="App">
+        <header>
+          <h1>
+            <a
+              href="/"
+              onClick={function (e) {
+                console.log(e);
+                debugger;
+              }}
+            >
+              {this.state.subject.title}
+            </a>
+          </h1>
+          {this.state.subject.sub}
+        </header>
+      </div>
+    );
+  }
+```
+
+> 크롬 개발자 도구를 사용할 때 코드 내에 `debugger`를 사용하면 해당 부분에서 실행을 멈추고 `Sources` 탭에서 여러 정보를 확인할 수 있다.
+
+```javascript
+<a
+  href="/"
+  onClick={function (e) {
+    console.log(e);
+    e.preventDefault();
+  }}
+>
+  {this.state.subject.title}
+</a>
+```
+
+`e.preventDefault()`를 통해 기본적인 태그의 `event`를 막을 수 있다.
+
+## Event에서 State 변경하기
+
+앞에 예제에서 `state`의 `mode`에 따라 다르게 보여지도록 하였으므로 `event`를 통해 해당 `state`를 변경하도록 한다.
+
+```javascript
+<a
+  href="/"
+  onClick={function (e) {
+    e.preventDefault();
+    this.state.mode = "welcome";
+  }}
+>
+  {this.state.subject.title}
+</a>
+```
+
+하지만 다음과 같은 에러가 발생한다.
+
+```
+TypeError: Cannot read property 'state' of undefined
+```
+
+이는 이벤트가 발생할 때의 호출되는 함수에서의 `this`는 컴포넌트 자기 자신을 가리키지 않는다.
+
+따라서 다음과 같이 수정한다.
+
+```javascript
+<a
+  href="/"
+  onClick={function (e) {
+    e.preventDefault();
+    this.state.mode = "welcome";
+  }.bind(this)}
+>
+  {this.state.subject.title}
+</a>
+```
+
+`.bind(this)`를 통해 해당 함수 안에서 `this`는 컴포넌트 자기 자신을 가리키게 된다.
+
+하지만 `state`가 변경이 되어도 작동하지 않는다. 이는 React가 `state` 변경을 알아차리지 못하기에 `this.setState()`를 사용해야 한다.
+
+```javascript
+<a
+  href="/"
+  onClick={function (e) {
+    e.preventDefault();
+    this.setState({
+      mode: "welcome",
+    });
+  }.bind(this)}
+>
+  {this.state.subject.title}
+</a>
+```
