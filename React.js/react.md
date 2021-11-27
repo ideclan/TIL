@@ -583,3 +583,65 @@ TypeError: Cannot read property 'state' of undefined
   {this.state.subject.title}
 </a>
 ```
+
+### Event bind 함수
+
+`render()` 내에서 `this`는 `render()`가 속해있는 컴포넌트 자기 자신을 가르킨다.
+
+하지만 `event` 함수 내에서 `this`는 `undefined`이다.
+
+```javascript
+class App extends Component {
+  render() {
+    console.log("render", this);
+    return (
+      <a
+        href="/"
+        onClick={function (e) {
+          console.log("event in", this);
+          e.preventDefault();
+        }}
+      >
+        {this.state.subject.title}
+      </a>
+    );
+  }
+}
+
+// render App {props: {...}, context: {...} ...}
+// event in undefined
+```
+
+따라서 `bind()`를 통해 `this`를 주입시킬 수 있다.
+
+```javascript
+function bindTest() {
+  console.log(this.name);
+}
+
+const obj = { name: "Jiheon Lee" };
+
+bindTest().bind(obj);
+
+// Jiheon Lee
+```
+
+### Event setState 함수
+
+컴포넌트가 생성되는 시점에서 가장 먼저 실행되는 생성자 함수 `constructor()` 내에서 `state`값을 초기화한다.
+
+이미 컴포넌트가 생성된 이후에 동적으로 `state`를 변경할 때 아래와 같은 방식으로 변경하면 `react`는 변경을 알아채지 못한다.
+
+```javascript
+this.state.mode = "welcome";
+```
+
+화면의 변경도 이루어지지 않으며, 개발자 도구에서도 이를 알아채지 못하고 재실행해야 `state`가 변경되는 것을 볼 수 있다.
+
+따라서 `setState()`를 사용하여 `react`에게 `state` 변경이 이루어졌음을 알려야 한다.
+
+```javascript
+this.setState({
+  mode: "welcome",
+});
+```
