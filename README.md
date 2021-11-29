@@ -64,7 +64,7 @@
 
 ### React
 
--[React 학습 정리](https://github.com/jiheonn/TIL/blob/master/React/react.md)
+- [React 학습 정리](https://github.com/jiheonn/TIL/blob/master/React/react.md)
 
 ### Redis
 
