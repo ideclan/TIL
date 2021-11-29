@@ -1,3 +1,20 @@
+- [create react app](#create-react-app)
+  - [npm과 npx의 차이](#npm과-npx의-차이)
+- [react app 프로젝트 구조](#react-app-프로젝트-구조)
+- [react app 배포](#react-app-배포)
+- [Component 만들기](#component-만들기)
+- [Props](#props)
+- [React Developer Tools](#react-developer-tools)
+- [Component 파일로 분리하기](#component-파일로-분리하기)
+- [State](#state)
+  - [Key](#key)
+- [Event, State, Props and render](#event-state-props-and-render)
+  - [Event 설치](#event-설치)
+- [Event에서 State 변경하기](#event에서-state-변경하기)
+  - [Event bind 함수](#event-bind-함수)
+  - [Event setState 함수](#event-setstate-함수)
+- [Component Event 만들기](#component-event-만들기)
+
 ## create react app
 
 ```bash
@@ -476,7 +493,7 @@ class App extends Component {
 
 `this.state`에 `mode`를 추가하여 해당 값에 따라 다른 `title`과 `desc`를 갖도록 한다.
 
-### Event
+### Event 설치
 
 JavaScript에서의 Event는 `onclick=""`으로 사용하지만 React에서는 `onClick={}`으로 사용한다.
 
@@ -644,4 +661,55 @@ this.state.mode = "welcome";
 this.setState({
   mode: "welcome",
 });
+```
+
+## Component Event 만들기
+
+`Subject` 컴포넌트에 `onChangePage` 이벤트를 생성한다. 해당 함수는 `props`를 통해 전달되어 `this.props.onChangePage()`로 호출이 가능하다. 따라서 `<a>` 태그 안에 `onClick` 이벤트가 발생할 때 호출하여 `state`를 변경하도록 한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+          onChangePage={function () {
+            this.setState({
+              mode: "welcome",
+            });
+          }.bind(this)}
+        ></Subject>
+      </div>
+    );
+  }
+}
+```
+
+```javascript
+// Subject.js
+
+class Subject extends Component {
+  render() {
+    return (
+      <header>
+        <h1>
+          <a
+            href="/"
+            onClick={function (e) {
+              e.preventDefault();
+              this.props.onChangePage();
+            }.bind(this)}
+          >
+            {this.props.title}
+          </a>
+        </h1>
+        {this.props.sub}
+      </header>
+    );
+  }
+}
 ```
