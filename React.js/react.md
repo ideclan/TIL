@@ -713,3 +713,222 @@ class Subject extends Component {
   }
 }
 ```
+
+목록을 클릭했을 때 이에 해당되는 내용으로 보여지도록 한다.
+
+따라서 앞에 `Subject` 컴포넌트와 동일하게 `TOC` 컴포넌트에서도 `onChangePage` 이벤트를 생성한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <TOC
+          onChangePage={function () {
+            this.setState({
+              mode: "read",
+            });
+          }.bind(this)}
+          data={this.state.contents}
+        ></TOC>
+      </div>
+    );
+  }
+}
+```
+
+```javascript
+// TOC.js
+
+class TOC extends Component {
+  render() {
+    const { data } = this.props;
+    const tableOfContents = data.map((content) => (
+      <li key={content.id}>
+        <a
+          href={`/contents/${content.id}`}
+          onClick={function (e) {
+            e.preventDefault();
+            this.props.onChangePage();
+          }.bind(this)}
+        >
+          {content.title}
+        </a>
+      </li>
+    ));
+
+    return (
+      <nav>
+        <ul>{tableOfContents}</ul>
+      </nav>
+    );
+  }
+}
+```
+
+선택되어 있는 목록을 알고 있어야 하기 때문에 `state`에 `selectedContentId`를 추가한다.
+
+그리고 `mode: 'read'`인 경우 `selectedContentId`를 가진 `index`를 찾아 해당 목록의 내용을 보여주도록 한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "read",
+      selectedContentId: 2,
+      welcome: {
+        title: "Welcome",
+        desc: "Hello, React!!!",
+      },
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    let _title, _desc;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title;
+      _desc = this.state.contents[idx].desc;
+    }
+
+    return (
+      <div className="App">
+        <TOC
+          onChangePage={function () {
+            this.setState({
+              mode: "read",
+            });
+          }.bind(this)}
+          data={this.state.contents}
+        ></TOC>
+        <Content title={_title} desc={_desc}></Content>
+      </div>
+    );
+  }
+}
+```
+
+다음으로 사용자가 목록을 클릭했을 때 `selectedContentId`를 변경시켜야 한다.
+
+이는 `TOC` 컴포넌트에서 `props`로 전달받은 `onChangePage` 이벤트 함수에 클릭한 요소의 `id`를 인자로 넘겨 변경하면 된다.
+
+방법으로는 2가지가 있다.
+
+1. 태그안에 `data-<name>` 속성을 추가한다. 만약 `data-id`라면 이벤트 함수 내에서 `e.target.dataset.id`로 접근이 가능하다.
+
+2. `bind()`를 사용한다. 예를 들어, `.bind(this, content.id)` 두번째 인자로 넘겼다면 이벤트 함수 내에서 매개변수를 `function (id, e)`처럼 전달받을 수 있다. 이는 매개변수 순서가 이벤트 객체보다 앞에 나와야 한다.
+
+```javascript
+// TOC.js
+
+class TOC extends Component {
+  render() {
+    const { data } = this.props;
+    const tableOfContents = data.map((content) => (
+      <li key={content.id}>
+        <a
+          href={`/contents/${content.id}`}
+          data-id={content.id}
+          onClick={function (e) {
+            e.preventDefault();
+            this.props.onChangePage(e.target.dataset.id);
+          }.bind(this)}
+        >
+          {content.title}
+        </a>
+      </li>
+    ));
+
+    return (
+      <nav>
+        <ul>{tableOfContents}</ul>
+      </nav>
+    );
+  }
+}
+```
+
+`TOC` 이벤트 함수에서 전달받은 인자 `id`는 문자열이므로, 이를 주의하고 숫자 형태로 변경하여 `selectedContentId`를 변경하도록 한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "read",
+      selectedContentId: 2,
+      welcome: {
+        title: "Welcome",
+        desc: "Hello, React!!!",
+      },
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    let _title, _desc;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title;
+      _desc = this.state.contents[idx].desc;
+    }
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+          onChangePage={function () {
+            this.setState({
+              mode: "welcome",
+            });
+          }.bind(this)}
+        ></Subject>
+        <TOC
+          onChangePage={function (id) {
+            this.setState({
+              mode: "read",
+              selectedContentId: Number(id),
+            });
+          }.bind(this)}
+          data={this.state.contents}
+        ></TOC>
+        <Content title={_title} desc={_desc}></Content>
+      </div>
+    );
+  }
+}
+```
