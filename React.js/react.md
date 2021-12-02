@@ -15,6 +15,10 @@
   - [Event setState 함수](#event-setstate-함수)
 - [Component Event 만들기](#component-event-만들기)
 - [Props VS State](#props-vs-state)
+- [CRUD](#crud)
+  - [Create 구현](#create-구현)
+    - [mode 변경 기능](#mode-변경-기능)
+    - [mode 전환 기능](#mode-전환-기능)
 
 ## create react app
 
@@ -953,3 +957,198 @@ class App extends Component {
 또한 하위 컴포넌트가 상위 컴포넌트를 동작시키면서 `props`를 전달하는 것이 아니라 상위 컴포넌트 안에 이벤트를 심고 그 안에서 `setState()`로 값을 변경해야 한다.
 
 적절한 `props`와 `state` 사용으로 상위 컴포넌트와 하위 컴포넌트간에 상호 작용을 통해 동적으로 렌더링되는 SPA (Single Page Application)를 만들 수 있다.
+
+## CRUD
+
+- Create : form을 통해 목록과 내용을 작성한 후 저장하면 새로운 목록을 추가할 수 있도록 한다.
+- Read : 기존과 추가된 목록, 내용들을 보여질 수 있도록 한다.
+- Update : 기존 목록과 내용을 수정할 수 있도록 한다.
+- Delete : 기존 목록과 내용을 삭제할 수 있도록 한다.
+
+`components/` 내에 `Control.js`를 생성한다.
+
+```javascript
+// components/Control.js
+
+import React, { Component } from "react";
+
+class Control extends Component {
+  render() {
+    return (
+      <ul>
+        <li>
+          <a href="/create">create</a>
+        </li>
+        <li>
+          <a href="/update">update</a>
+        </li>
+        <li>
+          <input type="button" value="delete" />
+        </li>
+      </ul>
+    );
+  }
+}
+
+export default Control;
+```
+
+```javascript
+// App.js
+
+import React, { Component } from "react";
+import Control from "./components/Control";
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Control></Control>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+### Create 구현
+
+#### mode 변경 기능
+
+create를 클릭 시 `mode`를 `create`로 변경할 수 있도록 한다.
+
+```javascript
+// components/Control.js
+
+import React, { Component } from "react";
+
+class Control extends Component {
+  render() {
+    return (
+      <ul>
+        <li>
+          <a
+            href="/create"
+            onClick={function (e) {
+              e.preventDefault();
+              this.props.onChangeMode("create");
+            }.bind(this)}
+          >
+            create
+          </a>
+        </li>
+      </ul>
+    );
+  }
+}
+
+export default Control;
+```
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "read",
+    };
+  }
+  render() {
+    return (
+      <div className="App">
+        <Control
+          onChangeMode={function (mode) {
+            this.setState({
+              mode,
+            });
+          }.bind(this)}
+        ></Control>
+      </div>
+    );
+  }
+}
+```
+
+#### mode 전환 기능
+
+`mode`에 해당되는 `Content` 컴포넌트를 보여줄 수 있도록 한다. 예를 들어 `mode`가 `create`일 때 `CreateContent`를, `read`일 때 `ReadContent` 컴포넌트로 교체하도록 한다.
+
+따라서 `{_article}`로 하여 `mode`에 해당되는 컴포넌트를 사용하는 로직을 추가한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "read",
+      selectedContentId: 2,
+      welcome: {
+        title: "Welcome",
+        desc: "Hello, React!!!",
+      },
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    let _title, _desc, _article;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title;
+      _desc = this.state.contents[idx].desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "create") {
+      _article = <CreateContent></CreateContent>;
+    }
+    return (
+      <div className="App">
+        <Subject
+          title={this.state.subject.title}
+          sub={this.state.subject.sub}
+          onChangePage={function () {
+            this.setState({
+              mode: "welcome",
+            });
+          }.bind(this)}
+        ></Subject>
+        <TOC
+          onChangePage={function (id) {
+            this.setState({
+              mode: "read",
+              selectedContentId: Number(id),
+            });
+          }.bind(this)}
+          data={this.state.contents}
+        ></TOC>
+        <Control
+          onChangeMode={function (mode) {
+            this.setState({
+              mode,
+            });
+          }.bind(this)}
+        ></Control>
+        {_article}
+      </div>
+    );
+  }
+}
+```
