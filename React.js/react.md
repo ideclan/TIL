@@ -952,4 +952,4 @@ class App extends Component {
 
 또한 하위 컴포넌트가 상위 컴포넌트를 동작시키면서 `props`를 전달하는 것이 아니라 상위 컴포넌트 안에 이벤트를 심고 그 안에서 `setState()`로 값을 변경해야 한다.
 
-적절한 `props`와 `state` 사용으로 상위 컴포넌트와 하위 컴포넌트간에 상호 작용을 통해 동적으로 렌더링되는 SPA (Single Page Application)을 만들 수 있다.
+적절한 `props`와 `state` 사용으로 상위 컴포넌트와 하위 컴포넌트간에 상호 작용을 통해 동적으로 렌더링되는 SPA (Single Page Application)를 만들 수 있다.
