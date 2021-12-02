@@ -14,6 +14,7 @@
   - [Event bind 함수](#event-bind-함수)
   - [Event setState 함수](#event-setstate-함수)
 - [Component Event 만들기](#component-event-만들기)
+- [Props VS State](#props-vs-state)
 
 ## create react app
 
@@ -932,3 +933,23 @@ class App extends Component {
   }
 }
 ```
+
+## Props VS State
+
+**Props**
+
+- 읽기 전용(read-only) 이다.
+- 수정할 수 없다.
+- 상위 컴포넌트에서 하위 컴포넌트로 데이터를 전달하기 위해 사용된다.
+
+**State**
+
+- 상태 변경은 비동기식일 수 있다.
+- `this.setState()`를 통해 수정할 수 있다.
+- 렌더링 정보를 동적으로 바꿔나가기 위해 해당 컴포넌트에서 선언한다.
+
+상위 컴포넌트는 하위 컴포넌트에게 `props`를 통해 값을 전달해 내부의 `state`를 바꾸기 때문에 컴포넌트 스스로 외부에서 전달되는 `props`를 변경하는 것은 금지되어 있다.
+
+또한 하위 컴포넌트가 상위 컴포넌트를 동작시키면서 `props`를 전달하는 것이 아니라 상위 컴포넌트 안에 이벤트를 심고 그 안에서 `setState()`로 값을 변경해야 한다.
+
+적절한 `props`와 `state` 사용으로 상위 컴포넌트와 하위 컴포넌트간에 상호 작용을 통해 동적으로 렌더링되는 SPA (Single Page Application)을 만들 수 있다.
