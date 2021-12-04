@@ -19,6 +19,7 @@
   - [Create 구현](#create-구현)
     - [mode 변경 기능](#mode-변경-기능)
     - [mode 전환 기능](#mode-전환-기능)
+    - [form](#form)
 
 ## create react app
 
@@ -1148,6 +1149,39 @@ class App extends Component {
         ></Control>
         {_article}
       </div>
+    );
+  }
+}
+```
+
+#### form
+
+```javascript
+// components/CreateContent.js
+
+class CreateContent extends Component {
+  render() {
+    return (
+      <article>
+        <h2>Create</h2>
+        <form
+          action="/create_process"
+          method="post"
+          onSubmit={function (e) {
+            e.preventDefault();
+          }}
+        >
+          <p>
+            <input type="text" name="title" placeholder="title" />
+          </p>
+          <p>
+            <textarea name="desc" placeholder="description"></textarea>
+          </p>
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </form>
+      </article>
     );
   }
 }
