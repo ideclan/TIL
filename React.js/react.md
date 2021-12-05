@@ -21,6 +21,7 @@
     - [mode 전환 기능](#mode-전환-기능)
     - [form onSubmit Event](#form-onsubmit-event)
     - [Contents 변경](#contents-변경)
+    - [shouldComponentUpdate](#shouldcomponentupdate)
 
 ## create react app
 
@@ -1271,3 +1272,36 @@ class App extends Component {
   }
 }
 ```
+
+#### shouldComponentUpdate
+
+왜 원본을 수정하는 `push()` 보다는 복제하는 `concat()`을 사용해야 하는가? 이는 `shouldComponentUpdate()`를 통해 알아본다.
+
+현재 `TOC` 컴포넌트는 `this.state.contents`를 `props`로 전달받아 사용하기 때문에 만약 변경이 이루어진다면 `render()`를 호출하여 다시 렌더링 하도록 되어있다.
+
+하지만 상위 컴포넌트에서 `this.state.contents`가 아닌 다른 값의 변경이 이루어져도 모든 하위 컴포넌트에서 `render()`를 호출하여 다시 렌더링 한다.
+
+이는 `shouldComponentUpdate()`로 해결이 가능하다.
+
+1. `render()` 이전에 `shouldComponentUpdate()`가 실행된다.
+
+2. `shouldComponentUpdate()`의 `return` 값이 `true`이면 `render()`가 호출되고, `false`이면 호출되지 않는다.
+
+3. 변경 전과 변경 후의 값을 알아낼 수 있다.
+
+```javascript
+class TOC extends Component {
+  shouldComponentUpdate(newProps, newState) {
+    if (this.props.data === newProps.data) {
+      // 변경 사항이 없을 때, render() 호출 X
+      return false;
+    }
+    return true;
+  }
+  render() {}
+}
+```
+
+하지만 이전에 원본을 수정하는 `push()` 방식을 사용했다면, `this.props.data === newProps.data`는 항상 `true`를 반환하는 이슈가 발생하게 된다. 이는 변경 전과 변경 후의 값 추적이 어려워진다.
+
+따라서 `this.setState()`를 진행할 때는 항상 원본 수정보다는 복제하여 사용하고 주의하도록 한다.
