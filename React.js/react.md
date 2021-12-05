@@ -19,7 +19,8 @@
   - [Create 구현](#create-구현)
     - [mode 변경 기능](#mode-변경-기능)
     - [mode 전환 기능](#mode-전환-기능)
-    - [form](#form)
+    - [form onSubmit Event](#form-onsubmit-event)
+    - [Contents 변경](#contents-변경)
 
 ## create react app
 
@@ -1154,7 +1155,9 @@ class App extends Component {
 }
 ```
 
-#### form
+#### form onSubmit Event
+
+`onSubmit` 이벤트 함수를 통해 `form` 내에 `input value`를 가져올 수 있다. 이는 `e.target.<input name>.value`로 접근이 가능하다.
 
 ```javascript
 // components/CreateContent.js
@@ -1165,11 +1168,11 @@ class CreateContent extends Component {
       <article>
         <h2>Create</h2>
         <form
-          action="/create_process"
-          method="post"
           onSubmit={function (e) {
             e.preventDefault();
-          }}
+            // debugger;
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
         >
           <p>
             <input type="text" name="title" placeholder="title" />
@@ -1182,6 +1185,88 @@ class CreateContent extends Component {
           </p>
         </form>
       </article>
+    );
+  }
+}
+```
+
+```javascript
+// App.js
+
+_article = (
+  <CreateContent
+    onSubmit={function (title, desc) {
+      // add content to this.state.contents
+      console.log(title, desc);
+    }}
+  ></CreateContent>
+);
+```
+
+#### Contents 변경
+
+`contents`를 추가할 때 마지막 `id` 를 참조하기 위해 `recentContentId`를 추가한다. 이는 렌더링 시 `UI`에 영향을 주는 것이 아니기 때문에 `state`로 관리하지 않는다.
+
+그리고 원본을 수정하는 `push()` 보다는 복제하는 `concat()`을 활용하여 변경하도록 한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.recentContentId = 3,
+    this.state = {
+      mode: "read",
+      selectedContentId: 2,
+      welcome: {
+        title: "Welcome",
+        desc: "Hello, React!!!",
+      },
+      subject: {
+        title: "WEB",
+        sub: "world wide web!",
+      },
+      contents: [
+        { id: 1, title: "HTML", desc: "HTML is for information" },
+        { id: 2, title: "CSS", desc: "CSS is for design" },
+        { id: 3, title: "JavaScript", desc: "JavaScript is for interactive" },
+      ],
+    };
+  }
+  render() {
+    let _title, _desc, _article;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title;
+      _desc = this.state.contents[idx].desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "create") {
+      _article = (
+        <CreateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></CreateContent>
+      );
+    }
+    return (
+
     );
   }
 }
