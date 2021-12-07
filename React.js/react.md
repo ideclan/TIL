@@ -22,6 +22,7 @@
     - [form onSubmit Event](#form-onsubmit-event)
     - [Contents 변경](#contents-변경)
     - [shouldComponentUpdate](#shouldcomponentupdate)
+    - [Immutable](#immutable)
 
 ## create react app
 
@@ -1305,3 +1306,39 @@ class TOC extends Component {
 하지만 이전에 원본을 수정하는 `push()` 방식을 사용했다면, `this.props.data === newProps.data`는 항상 `true`를 반환하는 이슈가 발생하게 된다. 이는 변경 전과 변경 후의 값 추적이 어려워진다.
 
 따라서 `this.setState()`를 진행할 때는 항상 원본 수정보다는 복제하여 사용하고 주의하도록 한다.
+
+#### Immutable
+
+원본을 변경하지 않는다를 **불변성(immutable)** 이라고 한다. `concat()`을 사용하여도 되지만 이것이 불변인 지 또는 가변인 지 확인이 어려울 때가 있다.
+
+따라서 `Array.from()`을 사용하여 기존 배열을 복제하여 사용해도 된다. 복제된 배열은 내용물만 같을 뿐 서로 다른 주소값을 가진다.
+
+```javascript
+// Array
+let a = [1, 2];
+let b = Array.from(a);
+
+console.log(a, b, a === b); // [1, 2], [1, 2], false
+
+// Object
+let a = { name: "Jiheon Lee" };
+let b = Object.assign({}, a);
+
+console.log(a, b, a === b); // {name: 'Jiheon Lee'}, {name: 'Jiheon Lee'}, false
+```
+
+이를 통해 `push()`를 사용할 때는 다음과 같이 사용할 수 있다.
+
+```javascript
+let newContents = Array.from(this.state.contents);
+
+newContents.push({
+  id: this.recentContentId,
+  title: title,
+  desc: desc,
+});
+
+this.setState({
+  contents: newContents,
+});
+```
