@@ -23,6 +23,7 @@
     - [Contents 변경](#contents-변경)
     - [shouldComponentUpdate](#shouldcomponentupdate)
     - [Immutable](#immutable)
+  - [Update 구현](#update-구현)
 
 ## create react app
 
@@ -1341,4 +1342,236 @@ newContents.push({
 this.setState({
   contents: newContents,
 });
+```
+
+### Update 구현
+
+기존 목록과 내용을 수정하기 위해 선택된 목록에 대한 내용들을 `form`에 넣어야 한다.
+
+`components/` 내에 `UpdateContent.js` 컴포넌트를 추가한다.
+
+```javascript
+// components/UpdateContent.js
+
+class UpdateContent extends Component {
+  render() {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          onSubmit={function (e) {
+            e.preventDefault();
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
+        >
+          <p>
+            <input type="text" name="title" placeholder="title" />
+          </p>
+          <p>
+            <textarea name="desc" placeholder="description"></textarea>
+          </p>
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </form>
+      </article>
+    );
+  }
+}
+```
+
+`App.js`에서 불러온 후 `this.state.mode`가 `update`인 경우에 보여질 컴포넌트 로직을 추가한다.
+
+```javascript
+// App.js
+
+import UpdateContent from "./components/UpdateContent";
+
+class App extends Component {
+  render() {
+    let _title, _desc, _article;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title
+      _desc = this.state.contents[idx].desc
+
+      _article = (
+        <ReadContent title={_title} desc={_desc}></ReadContent>
+      );
+    } else if (this.state.mode === "create") {
+      _article = (
+        <CreateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></CreateContent>
+      );
+    } else if (this.state.mode === "update") {
+      _article = (
+        <UpdateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></UpdateContent>
+      );
+    }
+    return ()
+  }
+}
+```
+
+`this.state.mode`에 따라 보여질 컴포넌트 로직을 `getContents()` 함수로 빼내어 리팩터링을 진행한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  getContents() {
+    let _title, _desc, _article;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "read") {
+      const idx = this.state.contents.findIndex(
+        (content) => content.id === this.state.selectedContentId
+      );
+
+      _title = this.state.contents[idx].title;
+      _desc = this.state.contents[idx].desc;
+
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "create") {
+      _article = (
+        <CreateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></CreateContent>
+      );
+    } else if (this.state.mode === "update") {
+      _article = (
+        <UpdateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></UpdateContent>
+      );
+    }
+    return _article;
+  }
+  render() {
+    return <div className="App">{this.getContents()}</div>;
+  }
+}
+```
+
+선택된 목록에 대한 내용들을 가져오기 위해 `this.recentContentId` 해당되는 컨텐츠를 찾아야 한다. 이는 `this.state.mode`가 `read`인 경우에서 이미 다뤘으므로, 중복해서 사용되기 때문에 이를 `getReadContent()`로 함수화 한다.
+
+`read`, `update`인 경우에서 호출하여 사용하고, `update`인 경우에서는 해당 컨텐츠 내용을 하위 컴포넌트에 `props`로 전달한다.
+
+```javascript
+// App.js
+
+class App extends Component {
+  getReadContent() {
+    const idx = this.state.contents.findIndex(
+      (content) => content.id === this.state.selectedContentId
+    );
+
+    return this.state.contents[idx];
+  }
+  getContents() {
+    let _title, _desc, _article;
+    if (this.state.mode === "welcome") {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (this.state.mode === "read") {
+      const content = this.getReadContent();
+
+      _article = (
+        <ReadContent title={content.title} desc={content.desc}></ReadContent>
+      );
+    } else if (this.state.mode === "create") {
+      _article = (
+        <CreateContent
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></CreateContent>
+      );
+    } else if (this.state.mode === "update") {
+      const content = this.getReadContent();
+
+      _article = (
+        <UpdateContent
+          data={content}
+          onSubmit={function (title, desc) {
+            this.recentContentId += 1;
+            const contents = this.state.contents.concat({
+              id: this.recentContentId,
+              title: title,
+              desc: desc,
+            });
+            this.setState({
+              contents,
+            });
+          }.bind(this)}
+        ></UpdateContent>
+      );
+    }
+    return _article;
+  }
+  render() {
+    return <div className="App">{this.getContents()}</div>;
+  }
+}
 ```
