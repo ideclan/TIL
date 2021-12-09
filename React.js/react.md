@@ -24,6 +24,7 @@
     - [shouldComponentUpdate](#shouldcomponentupdate)
     - [Immutable](#immutable)
   - [Update 구현](#update-구현)
+    - [form](#form)
 
 ## create react app
 
@@ -1572,6 +1573,213 @@ class App extends Component {
   }
   render() {
     return <div className="App">{this.getContents()}</div>;
+  }
+}
+```
+
+#### form
+
+상위 컴포넌트에서 `props`로 전달받은 데이터를 `form`내에 `<input value={this.props}>`를 통해 값을 넣어 주어야 한다.
+
+```javascript
+// components/UpdateContent.js
+
+class UpdateContent extends Component {
+  render() {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          onSubmit={function (e) {
+            e.preventDefault();
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
+        >
+          <input
+            type="text"
+            name="title"
+            placeholder="title"
+            value={this.props.data.title}
+          />
+        </form>
+      </article>
+    );
+  }
+}
+```
+
+하지만 다음과 같은 에러가 발생하며, 수정 또한 되지 않고 `read-only` 상태가 된다.
+
+```
+Warning: You provided a `value` prop to a form field without an `onChange` handler.
+This will render a read-only field.
+If the field should be mutable use `defaultValue`.
+Otherwise, set either `onChange` or `readOnly`.
+```
+
+이를 해결하기 위해, 먼저 `props`로 전달받는 데이터를 가변적인 데이터 즉, 해당 컴포넌트에서 `state`화 한다. 그 다음 `onChange` 이벤트를 추가한 후 변경사항을 추적하도록 `this.setState()`를 진행한다.
+
+```javascript
+// components/UpdateContent.js
+
+class UpdateContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: this.props.data.title,
+      desc: this.props.data.desc,
+    };
+  }
+  render() {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          onSubmit={function (e) {
+            e.preventDefault();
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
+        >
+          <p>
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              value={this.state.title}
+              onChange={function (e) {
+                this.setState({
+                  title: e.target.value,
+                });
+              }.bind(this)}
+            />
+          </p>
+          <p>
+            <textarea
+              name="desc"
+              placeholder="description"
+              value={this.state.desc}
+              onChange={function (e) {
+                this.setState({
+                  desc: e.target.value,
+                });
+              }.bind(this)}
+            ></textarea>
+          </p>
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </form>
+      </article>
+    );
+  }
+}
+```
+
+`<input>`과 `<textarea>`에서의 `onChange` 이벤트 함수는 중복되므로, 해당 부분을 함수화 한다.
+
+`{ [e.target.name]: e.target.value }`는 객체 안에서 `key`를 `[ ]`로 감싸면 그 안에 넣은 레퍼런스가 가리키는 실제 값이 `key` 값으로 사용된다.
+
+```javascript
+// components/UpdateContent.js
+
+class UpdateContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: this.props.data.title,
+      desc: this.props.data.desc,
+    };
+  }
+  inputFormHandler(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+  render() {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          onSubmit={function (e) {
+            e.preventDefault();
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
+        >
+          <p>
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              value={this.state.title}
+              onChange={this.inputFormHandler.bind(this)}
+            />
+          </p>
+          <p>
+            <textarea
+              name="desc"
+              placeholder="description"
+              value={this.state.desc}
+              onChange={this.inputFormHandler.bind(this)}
+            ></textarea>
+          </p>
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </form>
+      </article>
+    );
+  }
+}
+```
+
+`onChange={this.inputFormHandler.bind(this)}` 에서의 `.bind(this)`처럼 중복되는 부분 또한 다음과 같이 변경할 수 있다.
+
+```javascript
+// components/UpdateContent.js
+
+class UpdateContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: this.props.data.title,
+      desc: this.props.data.desc,
+    };
+    this.inputFormHandler = this.inputFormHandler.bind(this);
+  }
+  inputFormHandler(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+  render() {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          onSubmit={function (e) {
+            e.preventDefault();
+            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+          }.bind(this)}
+        >
+          <p>
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              value={this.state.title}
+              onChange={this.inputFormHandler}
+            />
+          </p>
+          <p>
+            <textarea
+              name="desc"
+              placeholder="description"
+              value={this.state.desc}
+              onChange={this.inputFormHandler}
+            ></textarea>
+          </p>
+          <p>
+            <input type="submit" value="Submit" />
+          </p>
+        </form>
+      </article>
+    );
   }
 }
 ```
