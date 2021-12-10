@@ -25,6 +25,7 @@
     - [Immutable](#immutable)
   - [Update 구현](#update-구현)
     - [form](#form)
+  - [Delete 구현](#delete-구현)
 
 ## create react app
 
@@ -1779,6 +1780,69 @@ class UpdateContent extends Component {
           </p>
         </form>
       </article>
+    );
+  }
+}
+```
+
+### Delete 구현
+
+선택된 목록에 대한 내용을 삭제할 수 있도록 한다. `this.state.mode`가 `delete`인 경우 삭제를 진행하도록 한다.
+
+```javascript
+// components/Control.js
+
+class Control extends Component {
+  render() {
+    return (
+      <ul>
+        <li>
+          <input
+            type="button"
+            value="delete"
+            onClick={function () {
+              this.props.onChangeMode("delete");
+            }.bind(this)}
+          />
+        </li>
+      </ul>
+    );
+  }
+}
+```
+
+```javascript
+// App.js
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Control
+          onChangeMode={function (mode) {
+            if (mode === "delete") {
+              if (window.confirm("해당 항목을 삭제하시겠습니까?")) {
+                const contents = Array.from(this.state.contents);
+
+                const idx = contents.findIndex(
+                  (content) => content.id === this.state.selectedContentId
+                );
+
+                contents.splice(idx, 1);
+
+                this.setState({
+                  mode: "welcome",
+                  contents,
+                });
+              }
+            } else {
+              this.setState({
+                mode,
+              });
+            }
+          }.bind(this)}
+        ></Control>
+      </div>
     );
   }
 }
