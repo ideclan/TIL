@@ -62,9 +62,9 @@
 - [Black](https://github.com/jiheonn/TIL/blob/master/Python/black.md)
 - [Type Annotation (타입 주석)](https://github.com/jiheonn/TIL/blob/master/Python/type-annotation.md)
 
-### React
+### React.js
 
-- [React.js 학습 정리](https://github.com/jiheonn/TIL/blob/master/React.js/react.md)
+- [React.js 학습 정리](https://github.com/jiheonn/TIL/blob/master/React.js/reactjs.md)
 
 ### Redis
 
