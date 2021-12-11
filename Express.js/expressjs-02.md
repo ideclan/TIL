@@ -1,4 +1,4 @@
-# Express
+# Express.js
 
 - `npm install express` : express 설치
 - `npm install --save-dev @types/express` : express를 사용하면서 타입 체크 도움
