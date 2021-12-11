@@ -12,11 +12,11 @@
 
 - [Bootstrap 기초](https://github.com/jiheonn/TIL/blob/master/Bootstrap/bootstrap.md)
 
-### Express
+### Express.js
 
-- [Express 학습 정리 1](https://github.com/jiheonn/TIL/blob/master/Express/express-01.md)
-- [Express 학습 정리 2](https://github.com/jiheonn/TIL/blob/master/Express/express-02.md)
-- [Express에서 ES6를 위한 Babel 설정 방법](https://github.com/jiheonn/TIL/blob/master/Express/babel.md)
+- [Express.js 학습 정리 1](https://github.com/jiheonn/TIL/blob/master/Express.js/expressjs-01.md)
+- [Express.js 학습 정리 2](https://github.com/jiheonn/TIL/blob/master/Express.js/expressjs-02.md)
+- [Express.js에서 ES6를 위한 Babel 설정 방법](https://github.com/jiheonn/TIL/blob/master/Express.js/babel.md)
 
 ### Git
 
