@@ -1,4 +1,4 @@
-# Express
+# Express.js
 
 - Node.js 기반 웹 프레임워크
 - 설치
