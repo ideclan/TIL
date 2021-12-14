@@ -2,6 +2,7 @@
   - [가상 머신 (VMware, virtualbox)](#가상-머신-vmware-virtualbox)
   - [Docker 개념](#docker-개념)
 - [이미지 Pull](#이미지-pull)
+- [컨테이너 Run](#컨테이너-run)
 
 ## Docker 등장 배경
 
@@ -64,4 +65,56 @@ docker.io/library/nginx:latest
 ❯ docker images
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 nginx        latest    f652ca386ed1   11 days ago   141MB
+```
+
+이미지를 삭제할 때는 `rmi` 명령어를 통해 진행한다. 해당 이미지를 `IMAGE` 부분에 작성한다.
+
+```bash
+$ docker rmi IMAGE
+```
+
+## 컨테이너 Run
+
+이미지를 실행시켜 `Container`를 생성한다. `run` 명령어를 통해 진행하며 해당 이미지를 `IMAGE` 부분에 작성한다. 컨테이너에 이름을 부여할 때는 `--name` 옵션을 사용하여 `NAME` 부분에 원하는 이름을 작성한다.
+
+```bash
+$ docker run IMAGE
+
+$ docker --name NAME IMAGE
+```
+
+생성된 여러 컨테이너들의 정보를 확인할 때는 `ps` 명령어를 통해 가능하다. 실행중인 컨테이너만 보이기 때문에 `-a` 옵션을 통해 종료된 컨테이너 또한 확인할 수 있다.
+
+```bash
+$ docker ps
+
+$ docker ps -a
+```
+
+실행중인 컨테이너를 종료할 때는 `stop` 명령어를 통해 가능하다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
+
+```bash
+$ docker stop CONTAINER
+```
+
+종료된 컨테이너를 다시 실행할 때는 `start` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
+
+```bash
+$ docker start CONTAINER
+```
+
+컨테이너의 로그들을 확인할 때는 `logs` 명령어를 통해 가능하다. 실시간 로그들을 확인하려면 `-f` 옵션을 사용한다.
+
+```bash
+$ docker logs CONTAINER
+
+$ docker logs -f CONTAINER
+```
+
+컨테이너를 삭제할 때는 `rm` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다. 하지만 실행중인 컨테이너는 삭제할 수 없으므로, `stop`을 진행한 후 시도해야 한다. `stop`을 하지 않고 강제 삭제를 원한다면 `--force` 옵션을 사용한다.
+
+```bash
+$ docker rm CONTAINER
+
+$ docker rm --force CONTAINER
 ```
