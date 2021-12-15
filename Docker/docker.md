@@ -1,8 +1,21 @@
 - [Docker 등장 배경](#docker-등장-배경)
   - [가상 머신 (VMware, virtualbox)](#가상-머신-vmware-virtualbox)
   - [Docker 개념](#docker-개념)
-- [이미지 Pull](#이미지-pull)
-- [컨테이너 Run](#컨테이너-run)
+- [이미지](#이미지)
+  - [다운로드](#다운로드)
+  - [조회](#조회)
+  - [삭제](#삭제)
+- [컨테이너](#컨테이너)
+  - [실행](#실행)
+  - [조회](#조회-1)
+  - [중지](#중지)
+  - [재실행](#재실행)
+  - [로그](#로그)
+  - [삭제](#삭제-1)
+  - [접속](#접속)
+- [호스트와 컨테이너](#호스트와-컨테이너)
+  - [포트 연결](#포트-연결)
+  - [파일 시스템 연결](#파일-시스템-연결)
 
 ## Docker 등장 배경
 
@@ -20,9 +33,9 @@
 
 하나의 컴퓨터 안에서 가상 머신처럼 독립된 여러 실행환경을 만든다. 이는 실제 운영체제를 설치하지 않기 때문에 설치 용량이 적고 실행 속도 또한 빠르다.
 
-이때 운영체제가 설치된 하나의 컴퓨터를 `host`, 각각의 독립된 실행환경을 `container`라고 한다.
+이때 운영체제가 설치된 하나의 컴퓨터를 `Host`, 각각의 독립된 실행환경을 `Container`라고 한다.
 
-## 이미지 Pull
+## 이미지
 
 - `Pull` : `Docker Hub`에서 `Image`를 다운로드 받는 행위
 - `Run` : `Image`를 실행시켜 `Container`가 되도록 하는 행위
@@ -36,11 +49,15 @@
 
 > `Docker Registry`는 도커 이미지를 공유하기 위한 서버 어플리케이션이다.
 
-CLI 환경에서 `pull` 명령어를 통해 진행한다. 예를 들어 Nginx 이미지라면 `NAME` 부분에 작성하면 된다.
+### 다운로드
+
+CLI 환경에서 `pull` 명령어를 통해 진행한다. 예를 들어 httpd 이미지라면 `NAME` 부분에 작성하면 된다.
 
 ```bash
 $ docker pull NAME
 ```
+
+### 조회
 
 `Pull`한 이미지들은 `images` 명령어를 통해 확인이 가능하다.
 
@@ -48,24 +65,7 @@ $ docker pull NAME
 $ docker images
 ```
 
-```bash
-❯ docker pull nginx
-Using default tag: latest
-latest: Pulling from library/nginx
-e5ae68f74026: Pull complete
-21e0df283cd6: Pull complete
-ed835de16acd: Pull complete
-881ff011f1c9: Pull complete
-77700c52c969: Pull complete
-44be98c0fab6: Pull complete
-Digest: sha256:9522864dd661dcadfd9958f9e0de192a1fdda2c162a35668ab6ac42b465f0603
-Status: Downloaded newer image for nginx:latest
-docker.io/library/nginx:latest
-
-❯ docker images
-REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
-nginx        latest    f652ca386ed1   11 days ago   141MB
-```
+### 삭제
 
 이미지를 삭제할 때는 `rmi` 명령어를 통해 진행한다. 해당 이미지를 `IMAGE` 부분에 작성한다.
 
@@ -73,48 +73,123 @@ nginx        latest    f652ca386ed1   11 days ago   141MB
 $ docker rmi IMAGE
 ```
 
-## 컨테이너 Run
+## 컨테이너
+
+### 실행
 
 이미지를 실행시켜 `Container`를 생성한다. `run` 명령어를 통해 진행하며 해당 이미지를 `IMAGE` 부분에 작성한다. 컨테이너에 이름을 부여할 때는 `--name` 옵션을 사용하여 `NAME` 부분에 원하는 이름을 작성한다.
 
 ```bash
-$ docker run IMAGE
+$ docker run [OPTIONS] IMAGE
 
-$ docker --name NAME IMAGE
+# [OPTIONS]:
+#   --name NAME
 ```
 
-생성된 여러 컨테이너들의 정보를 확인할 때는 `ps` 명령어를 통해 가능하다. 실행중인 컨테이너만 보이기 때문에 `-a` 옵션을 통해 종료된 컨테이너 또한 확인할 수 있다.
+### 조회
+
+생성된 여러 컨테이너들의 정보를 확인할 때는 `ps` 명령어를 통해 가능하다. 실행중인 컨테이너만 보이기 때문에 `--all`, `-a` 옵션을 통해 중지된 컨테이너 또한 확인할 수 있다.
 
 ```bash
-$ docker ps
+$ docker ps [OPTIONS]
 
-$ docker ps -a
+# [OPTIONS]:
+#   --all, -a
 ```
 
-실행중인 컨테이너를 종료할 때는 `stop` 명령어를 통해 가능하다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
+### 중지
+
+실행중인 컨테이너를 중지할 때는 `stop` 명령어를 통해 가능하다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
 
 ```bash
 $ docker stop CONTAINER
 ```
 
-종료된 컨테이너를 다시 실행할 때는 `start` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
+### 재실행
+
+중지된 컨테이너를 다시 실행할 때는 `start` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다.
 
 ```bash
 $ docker start CONTAINER
 ```
 
-컨테이너의 로그들을 확인할 때는 `logs` 명령어를 통해 가능하다. 실시간 로그들을 확인하려면 `-f` 옵션을 사용한다.
+### 로그
+
+컨테이너의 로그들을 확인할 때는 `logs` 명령어를 통해 가능하다. 실시간 로그들을 확인하려면 `--follow`, `-f` 옵션을 사용한다.
 
 ```bash
-$ docker logs CONTAINER
+$ docker logs [OPTIONS] CONTAINER
 
-$ docker logs -f CONTAINER
+# [OPTIONS]:
+#   --follow, -f
 ```
 
-컨테이너를 삭제할 때는 `rm` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다. 하지만 실행중인 컨테이너는 삭제할 수 없으므로, `stop`을 진행한 후 시도해야 한다. `stop`을 하지 않고 강제 삭제를 원한다면 `--force` 옵션을 사용한다.
+### 삭제
+
+컨테이너를 삭제할 때는 `rm` 명령어를 통해 진행한다. 해당 컨테이너의 이름을 `CONTAINER` 부분에 작성한다. 하지만 실행중인 컨테이너는 삭제할 수 없으므로, `stop`을 진행한 후 시도해야 한다. `stop`을 하지 않고 강제 삭제를 원한다면 `--force`, `-f` 옵션을 사용한다.
 
 ```bash
-$ docker rm CONTAINER
+$ docker rm [OPTIONS] CONTAINER
 
-$ docker rm --force CONTAINER
+# [OPTIONS]:
+#   --force, -f
 ```
+
+### 접속
+
+`exec` 명령어를 통해 실행중인 컨테이너에서 새 명령을 실행한다. 해당 컨테이너의 이름을 `CONTAINER`, 실행시키고자 하는 명령을 `COMMAND` 부분에 작성한다.
+
+```bash
+$ docker exec [OPTIONS] CONTAINER COMMAND
+
+# [OPTIONS]:
+#   --interactive, -i
+#   --tty, -t
+```
+
+컨테이너와 연결을 원한다면 `COMMAND` 부분에 `/bin/sh`를 작성한다. 이는 사용자가 입력한 명령어들을 `본 쉘(Bourne shell: sh)`이 받아 운영체제에게 전달한다. 본 쉘을 대체하기 위해 만들어진 `배쉬 쉘(Borune-agin shell: bash)`이 있다면 이를 사용하는 것을 추천한다.
+
+그리고 지속적인 연결을 위해 `-it` 옵션을 사용한다. 이후 컨테이너에 접속한 것을 확인할 수 있다.
+
+```bash
+$ docker exec -it CONTAINER /bin/sh # 또는 /bin/bash
+```
+
+컨테이너 접속을 종료하려면 `exit` 명령어를 통해 가능하다.
+
+> `exec`와 `attach`의 차이점?
+>
+> - `exec` : 이미 시작된 컨테이너에서 새로운 것을 실행하기 위한 것, 쉘의 새 인스턴스를 사용한다. 컨테이너에서 나가도 컨테이너가 종료되지 않는다.
+> - `attach` : 추가 작업을 실행하기 위한 것이 아닌 실행중인 프로세스에 연결하기 위한 것, 쉘의 한 인스턴스를 사용한다. 컨테이너에서 나가면 컨테이너가 종료된다.
+>
+> [[Stack Overflow] difference between docker attach and docker exec](https://stackoverflow.com/questions/30960686/difference-between-docker-attach-and-docker-exec)
+
+## 호스트와 컨테이너
+
+### 포트 연결
+
+웹 브라우저가 `port: 80`으로 요청(request)을 보냈을 때 `port: 80`의 요청을 대기하는 웹 서버가 `File System`에서 이에 해당하는 `HTML`을 찾아 응답(response)한다.
+
+도커를 사용하여 `port: 80`의 요청을 대기하는 웹 서버를 `Container`로 실행한다면 위와 동일하게 동작하는가?
+
+이는 동작하지 않는다. [Docker 개념](#docker-개념)으로 `Host`와 `Container`는 서로 독립된 실행환경이므로 독립된 `port`와 `File System`을 갖는다. 따라서 `Host`와 `Container`의 `port`를 연결해주어야 한다.
+
+```bash
+$ docker run -p HOST_PORT:CONTAINER_PORT IMAGE
+```
+
+`run` 명령어에서 `--publish`, `-p` 옵션을 사용한다. `:` 기준으로 앞에는 `Host`, 뒤에는 `Container`의 `port`를 작성하면 된다.
+
+이처럼 연결된 `port`를 통해 신호를 전달하는 것을 `포트포워딩(Port Forwarding)`이라 한다.
+
+### 파일 시스템 연결
+
+만약 컨테이너에 접속하여 파일을 수정한 후 컨테이너를 삭제한다면 복구할 수 있는가?
+
+이는 불가능하다. 앞서 말했듯이 `Host`와 `Container`는 서로 독립된 `File System`을 갖는다. 따라서 각 `File System`을 연결하여 `Host`에서 파일을 수정했을 때 `Container` 또한 수정사항이 반영되도록 해야 한다.
+
+```bash
+$ docker run -v HOST_PATH:CONTAINER_PATH IMAGE
+```
+
+`run` 명령어에서 `--volume`, `-v` 옵션을 사용한다. `:` 기준으로 앞에는 `Host`, 뒤에는 `Container`의 `path`를 작성하면 된다.
