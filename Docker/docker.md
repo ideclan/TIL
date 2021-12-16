@@ -1,5 +1,5 @@
 - [Docker 등장 배경](#docker-등장-배경)
-  - [가상 머신 (VMware, virtualbox)](#가상-머신-vmware-virtualbox)
+  - [가상 머신 (Virtual Machine)](#가상-머신-virtual-machine)
   - [Docker 개념](#docker-개념)
 - [이미지](#이미지)
   - [다운로드](#다운로드)
@@ -23,11 +23,15 @@
 
 따라서 내가 원하는 운영체제와 소프트웨어가 설치되어 있는 컴퓨터를 누군가 제공해 준다면 얼마나 좋을까? 하지만 각각 필요한 운영체제와 소프트웨어가 설치된 여러 개의 컴퓨터를 빌린다는 것은 비용이 많이 든다.
 
-### 가상 머신 (VMware, virtualbox)
+### 가상 머신 (Virtual Machine)
 
 하나의 컴퓨터 위에 여러 가상 컴퓨터를 만든 후, 그 위에 각각 필요한 운영체제와 소프트웨어를 설치한다. 이를 통해 여러 개의 컴퓨터를 별도로 구매하는 것이 필요하지 않게 된다.
 
-하지만 큰 용량을 차지하는 운영체제를 여러 개 설치해야 하고 그리고 운영체제 위에 또 다른 운영체제가 있기 때문에 실행 속도 또한 느려지게 된다.
+하지만 큰 용량을 차지하는 운영체제를 여러 개 설치해야 하고 그리고 운영체제(Host OS) 위에 또 다른 운영체제(Guest OS)가 있기 때문에 실행 속도 또한 느려지게 된다.
+
+![](https://user-images.githubusercontent.com/48443734/146320687-f385836a-2f40-4f28-bad9-0da9e331d4d5.JPG)
+
+> 가상화 소프트웨어 : VMware, Virtualbox
 
 ### Docker 개념
 
@@ -35,15 +39,19 @@
 
 이때 운영체제가 설치된 하나의 컴퓨터를 `Host`, 각각의 독립된 실행환경을 `Container`라고 한다.
 
-## 이미지
+![](https://user-images.githubusercontent.com/48443734/146320756-1b51389a-3717-4d6c-95a4-e085deed51dc.JPG)
 
-- `Pull` : `Docker Hub`에서 `Image`를 다운로드 받는 행위
-- `Run` : `Image`를 실행시켜 `Container`가 되도록 하는 행위
+## 이미지
 
 |         다운로드 서비스         | 소프트웨어 |   실행    |
 | :-----------------------------: | :--------: | :-------: |
 |            App Store            |  Program   |  Process  |
 | Docker Hub 또는 Docker Registry |   Image    | Container |
+
+- `Pull` : `Docker Hub`에서 `Image`를 다운로드 받는 행위
+- `Run` : `Image`를 실행시켜 `Container`가 되도록 하는 행위
+
+![](https://user-images.githubusercontent.com/48443734/146320793-a2267da1-3c05-4c67-9be2-a3dafccd0e89.JPG)
 
 [Docker Hub](https://hub.docker.com/)에서 Explore ❯ Containers로 이동하여 여러 이미지를 확인할 수 있다. 그중에 Official Image는 도커에서 공식적으로 관리하는 이미지이다.
 
@@ -149,7 +157,14 @@ $ docker exec [OPTIONS] CONTAINER COMMAND
 
 컨테이너와 연결을 원한다면 `COMMAND` 부분에 `/bin/sh`를 작성한다. 이는 사용자가 입력한 명령어들을 `본 쉘(Bourne shell: sh)`이 받아 운영체제에게 전달한다. 본 쉘을 대체하기 위해 만들어진 `배쉬 쉘(Borune-agin shell: bash)`이 있다면 이를 사용하는 것을 추천한다.
 
-그리고 지속적인 연결을 위해 `-it` 옵션을 사용한다. 이후 컨테이너에 접속한 것을 확인할 수 있다.
+하지만 `/bin/sh` 명령어를 실행하면 아무것도 실행하지 않은 것 처럼 아무런 변화가 없다. `Docker`는 `Virtual Machine`처럼 하나의 온전한 서버를 제공하는 것이 아닌 명령을 실행하는 환경만 제공하고 그 명령을 실행할 뿐이다. 즉, `Container`는 단지 명령만 실행하고 그 결과만 보여주는 기능을 수행한다.
+
+따라서 지속적인 연결을 위해 `-it` 옵션을 사용해야 한다.
+
+- `--interactive`, `-i` : 표준 입력과 표준 출력을 키보드와 화면을 통해 가능하도록 한다.
+- `--tty`, `-t` : 콘솔 및 터미널 환경(TTY: Tele Type Writer)을 에뮬레이션(Emulation) 하도록 한다.
+
+> 에뮬레이션(Emulation) : 한 컴퓨터가 다른 컴퓨터처럼 똑같이 작동하도록 하는 것
 
 ```bash
 $ docker exec -it CONTAINER /bin/sh # 또는 /bin/bash
@@ -174,6 +189,8 @@ $ docker exec -it CONTAINER /bin/sh # 또는 /bin/bash
 
 이는 동작하지 않는다. [Docker 개념](#docker-개념)으로 `Host`와 `Container`는 서로 독립된 실행환경이므로 독립된 `port`와 `File System`을 갖는다. 따라서 `Host`와 `Container`의 `port`를 연결해주어야 한다.
 
+![](https://user-images.githubusercontent.com/48443734/146320955-ea189b3c-8d24-498b-abad-6a16a4e46a66.JPG)
+
 ```bash
 $ docker run -p HOST_PORT:CONTAINER_PORT IMAGE
 ```
@@ -186,10 +203,17 @@ $ docker run -p HOST_PORT:CONTAINER_PORT IMAGE
 
 만약 컨테이너에 접속하여 파일을 수정한 후 컨테이너를 삭제한다면 복구할 수 있는가?
 
-이는 불가능하다. 앞서 말했듯이 `Host`와 `Container`는 서로 독립된 `File System`을 갖는다. 따라서 각 `File System`을 연결하여 `Host`에서 파일을 수정했을 때 `Container` 또한 수정사항이 반영되도록 해야 한다.
+이는 불가능하다. 앞서 말했듯이 `Host`와 `Container`는 서로 독립된 `File System`을 갖는다. 따라서 각 `File System`을 연결하여 `Host`에서 파일을 수정했을 때 `Container` 또한 수정사항이 반영되도록 하는 것이 바람직하다.
+
+![](https://user-images.githubusercontent.com/48443734/146321666-bb1d7391-926a-4a06-9403-0b955bdf241e.JPG)
 
 ```bash
 $ docker run -v HOST_PATH:CONTAINER_PATH IMAGE
 ```
 
 `run` 명령어에서 `--volume`, `-v` 옵션을 사용한다. `:` 기준으로 앞에는 `Host`, 뒤에는 `Container`의 `path`를 작성하면 된다.
+
+# References
+
+- [Docker Docs](https://docs.docker.com/engine/reference/run/)
+- [개발자가 처음 Docker 접할때 오는 멘붕 몇가지](https://www.popit.kr/%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%B2%98%EC%9D%8C-docker-%EC%A0%91%ED%95%A0%EB%95%8C-%EC%98%A4%EB%8A%94-%EB%A9%98%EB%B6%95-%EB%AA%87%EA%B0%80%EC%A7%80/)
