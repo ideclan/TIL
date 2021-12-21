@@ -83,6 +83,24 @@ $ docker build [OPTIONS] PATH | URL
 
 ### Dockerfile 작성 및 명령어
 
+|    명령어    |                                     설명                                     |
+| :----------: | :--------------------------------------------------------------------------: |
+|    `FROM`    |                              베이스 이미지 지정                              |
+|    `RUN`     |      새로운 레이어에서 명령을 실행하고 결과를 이미지에 반영 (`commit`)       |
+|    `CMD`     |                         컨테이너 실행 시 명령을 실행                         |
+|   `LABEL`    |                  이미지에 Key-Value 형태의 메타데이터 추가                   |
+| `MAINTAINER` |                        (Deprecated) 작성자 정보 기입                         |
+|   `EXPOSE`   |                         공개할 컨테이너의 포트 지정                          |
+|    `ENV`     |                         환경 변수를 Key-Value로 설정                         |
+|    `ADD`     | 새 파일, 디렉토리 또는 원격 파일(URL)을 복사하여 이미지의 파일 시스템에 추가 |
+|    `COPY`    |        새 파일 또는 디렉토리를 복사하여 컨테이너의 파일 시스템에 추가        |
+| `ENTRYPOINT` |                         컨테이너 실행 시 명령을 실행                         |
+|   `VOLUME`   |                                 볼륨 마운트                                  |
+|    `USER`    |                               사용자 권한 지정                               |
+|  `WORKDIR`   |                              작업 디렉토리 지정                              |
+|    `ARG`     |           `build` 할 때 `--build-arg` 옵션을 통해 전달할 변수 정의           |
+
 # References
 
 - [Docker Docs](https://docs.docker.com/engine/reference/run/)
+- [[docker] RUN vs CMD vs ENTRYPOINT](https://blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=freepsw&logNo=220982529575)
