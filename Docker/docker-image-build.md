@@ -2,6 +2,7 @@
   - [Commit](#commit)
   - [Dockerfile & Build](#dockerfile--build)
     - [Dockerfile 작성 및 명령어](#dockerfile-작성-및-명령어)
+    - [예시](#예시)
 - [References](#references)
 
 # Docker 이미지 만들기
@@ -100,7 +101,27 @@ $ docker build [OPTIONS] PATH | URL
 |  `WORKDIR`   |                              작업 디렉토리 지정                              |
 |    `ARG`     |           `build` 할 때 `--build-arg` 옵션을 통해 전달할 변수 정의           |
 
+### 예시
+
+```dockerfile
+# Dockerfile
+
+FROM ubuntu:20.04
+RUN apt update && \
+    apt install -y python3
+WORKDIR /var/www/html
+COPY ["index.html", "."]
+EXPOSE 8000
+CMD ["python3", "-u", "-m", "http.server"]
+```
+
+```bash
+$ docker build -t web-server-image .
+
+$ docker run -p 80:8000 --name web-server
+```
+
 # References
 
-- [Docker Docs](https://docs.docker.com/engine/reference/run/)
+- [Docker Docs](https://docs.docker.com/engine/reference/builder/)
 - [[docker] RUN vs CMD vs ENTRYPOINT](https://blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=freepsw&logNo=220982529575)
