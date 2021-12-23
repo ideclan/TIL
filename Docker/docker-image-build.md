@@ -84,44 +84,65 @@ $ docker build [OPTIONS] PATH | URL
 
 ### Dockerfile 작성 및 명령어
 
-|    명령어    |                                     설명                                     |
-| :----------: | :--------------------------------------------------------------------------: |
-|    `FROM`    |                              베이스 이미지 지정                              |
-|    `RUN`     |      새로운 레이어에서 명령을 실행하고 결과를 이미지에 반영 (`commit`)       |
-|    `CMD`     |                         컨테이너 실행 시 명령을 실행                         |
-|   `LABEL`    |                  이미지에 Key-Value 형태의 메타데이터 추가                   |
-| `MAINTAINER` |                        (Deprecated) 작성자 정보 기입                         |
-|   `EXPOSE`   |                         공개할 컨테이너의 포트 지정                          |
-|    `ENV`     |                         환경 변수를 Key-Value로 설정                         |
-|    `ADD`     | 새 파일, 디렉토리 또는 원격 파일(URL)을 복사하여 이미지의 파일 시스템에 추가 |
-|    `COPY`    |        새 파일 또는 디렉토리를 복사하여 컨테이너의 파일 시스템에 추가        |
-| `ENTRYPOINT` |                         컨테이너 실행 시 명령을 실행                         |
-|   `VOLUME`   |                                 볼륨 마운트                                  |
-|    `USER`    |                               사용자 권한 지정                               |
-|  `WORKDIR`   |                              작업 디렉토리 지정                              |
-|    `ARG`     |           `build` 할 때 `--build-arg` 옵션을 통해 전달할 변수 정의           |
+|    명령어    |                                         설명                                          |
+| :----------: | :-----------------------------------------------------------------------------------: |
+|    `FROM`    |                                  베이스 이미지 지정                                   |
+|    `RUN`     |           새로운 레이어에서 명령을 실행하고 결과를 이미지에 반영 (`commit`)           |
+|    `CMD`     |                             컨테이너 실행 시 명령을 실행                              |
+|   `LABEL`    |                       이미지에 Key-Value 형태의 메타데이터 추가                       |
+| `MAINTAINER` |                             (Deprecated) 작성자 정보 기입                             |
+|   `EXPOSE`   |                              공개할 컨테이너의 포트 지정                              |
+|    `ENV`     |                             환경 변수를 Key-Value로 설정                              |
+|    `ADD`     |     새 파일, 디렉토리 또는 원격 파일(URL)을 복사하여 이미지의 파일 시스템에 추가      |
+|    `COPY`    |            새 파일 또는 디렉토리를 복사하여 컨테이너의 파일 시스템에 추가             |
+| `ENTRYPOINT` |                             컨테이너 실행 시 명령을 실행                              |
+|   `VOLUME`   |                                      볼륨 마운트                                      |
+|    `USER`    |                                   사용자 권한 지정                                    |
+|  `WORKDIR`   |                                  작업 디렉토리 지정                                   |
+|    `ARG`     | `build` 시에만 사용되는 변수 정의, `--build-arg <name>=<value>` 옵션을 통해 전달 가능 |
 
 ### 예시
 
-```dockerfile
-# Dockerfile
+```bash
+echo "<h1>Hello, Docker</h1>" > index.html
+```
 
+```dockerfile
+# ./Dockerfile
+
+# 사용할 이미지 지정
 FROM ubuntu:20.04
+
+# 해당 명령을 실행하여 결과를 이미지에 반영
+# DEBIAN_FRONTEND=noninteractive
+#   - apt를 통해 설치하는 동안 상호작용하지 않도록 설정
 RUN apt update && \
-    apt install -y python3
+    DEBIAN_FRONTEND=noninteractive apt install -y apache2
+
+# 작업 디렉토리 지정
 WORKDIR /var/www/html
+
+# 호스트의 파일을 컨테이너 경로 내에 복사
+# WORKDIR를 통해 현재 경로는 /var/www/html
 COPY ["index.html", "."]
-EXPOSE 8000
-CMD ["python3", "-u", "-m", "http.server"]
+
+# 공개할 컨테이너의 포트 지정
+EXPOSE 80
+
+# 컨테이너가 생성된 이후에 해당 명령을 실행
+CMD ["apachectl", "-D", "FOREGROUND"]
 ```
 
 ```bash
-$ docker build -t web-server-image .
+$ docker build -t apache-server .
+```
 
-$ docker run -p 80:8000 --name web-server
+```bash
+$ docker run -p 80:80 --name web-server apache-server
 ```
 
 # References
 
 - [Docker Docs](https://docs.docker.com/engine/reference/builder/)
 - [[docker] RUN vs CMD vs ENTRYPOINT](https://blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=freepsw&logNo=220982529575)
+- [[Stack Overflow] Docker: Having issues installing apt-utils](https://stackoverflow.com/questions/51023312/docker-having-issues-installing-apt-utils/56569081#56569081)
