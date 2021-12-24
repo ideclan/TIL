@@ -2,6 +2,9 @@
   - [Commit](#commit)
   - [Dockerfile & Build](#dockerfile--build)
     - [Dockerfile 작성 및 명령어](#dockerfile-작성-및-명령어)
+      - [FROM](#from)
+      - [RUN](#run)
+      - [CMD](#cmd)
     - [예시](#예시)
 - [References](#references)
 
@@ -101,10 +104,62 @@ $ docker build [OPTIONS] PATH | URL
 |  `WORKDIR`   |                                  작업 디렉토리 지정                                   |
 |    `ARG`     | `build` 시에만 사용되는 변수 정의, `--build-arg <name>=<value>` 옵션을 통해 전달 가능 |
 
+#### FROM
+
+베이스 이미지를 지정한다. `Dockerfile`은 `FROM`으로 시작해야 유효하다. 단, `ARG`는 `FROM` 앞에 올 수 있다.
+
+`FROM`은 하나의 `Dockerfile` 내에서 여러 번 나타나 여러 이미지를 만들거나 한 빌드 단게를 다른 빌드 단계에 대한 종속성으로 사용할 수 있다.
+
+```dockerfile
+FROM <image>[:<tag>] [AS <name>]
+```
+
+첫 번째 `FROM` 이전에 발생하는 `ARG`에 의해 선언된 변수를 지원한다. 하지만 `FROM` 이전에 선언된 `ARG`는 빌드 단계 밖에 있으므로 `FROM` 이후에는 사용할 수 없다.
+
+```dockerfile
+ARG VERSION=latest
+
+FROM <image>:${VERSION}
+
+ARG VERSION # 빌드 단계에서 사용하려면 다시 ARG를 선언해야 한다.
+```
+
+#### RUN
+
+현재 이미지 위에 있는 새 레이어에서 명령을 실행하여 결과를 `commit`한다. 이는 `Dockerfile`의 `RUN` 다음 단계에 사용된다.
+
+`RUN`은 2가지 형식이 있다.
+
+1. shell
+
+`\`을 통해 하나의 `RUN`을 다음 줄로 계속할 수 있다.
+
+```dockerfile
+RUN <command>
+```
+
+2. exec
+
+shell 문자열 병합을 방지할 수 있다.
+
+```dockerfile
+RUN ["executable", "param1", "param2"]
+```
+
+exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]`에서 `$HOME`은 변수 대체를 수행하지 않기 때문에 shell 형식을 사용하거나 `RUN ["sh", "-c", "echo $HOME"]`처럼 쉘을 직접 실행해야 한다.
+
+#### CMD
+
+컨테이너 실행 시 해당 명령을 실행한다. `Dockerfile`에는 하나의 `CMD` 명령어만 있을 수 있다. 여러 개의 `CMD`가 존재한다면 마지막 `CMD`만 적용된다.
+
+`docker run`을 통해 실행될 때 직접 실행할 명령어를 지정한 경우 `Dockfile` 내에 `CMD`는 무시되고 지정한 명령어만 실행된다. 만약 `docker run <image> ls` 하게 되면 `ls` 명령만을 실행한다.
+
+주로 배포하는 시점 및 환경에 따라 `command`를 다양하게 지정해야 하는 경우 활용할 수 있다.
+
 ### 예시
 
 ```bash
-echo "<h1>Hello, Docker</h1>" > index.html
+$ echo "<h1>Hello, Docker</h1>" > index.html
 ```
 
 ```dockerfile
