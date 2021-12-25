@@ -5,6 +5,8 @@
       - [FROM](#from)
       - [RUN](#run)
       - [CMD](#cmd)
+      - [LABEL](#label)
+      - [MAINTAINER (Deprecated)](#maintainer-deprecated)
     - [예시](#예시)
 - [References](#references)
 
@@ -93,7 +95,7 @@ $ docker build [OPTIONS] PATH | URL
 |    `RUN`     |           새로운 레이어에서 명령을 실행하고 결과를 이미지에 반영 (`commit`)           |
 |    `CMD`     |                             컨테이너 실행 시 명령을 실행                              |
 |   `LABEL`    |                       이미지에 Key-Value 형태의 메타데이터 추가                       |
-| `MAINTAINER` |                             (Deprecated) 작성자 정보 기입                             |
+| `MAINTAINER` |                             (Deprecated) 작성자 정보 추가                             |
 |   `EXPOSE`   |                              공개할 컨테이너의 포트 지정                              |
 |    `ENV`     |                             환경 변수를 Key-Value로 설정                              |
 |    `ADD`     |     새 파일, 디렉토리 또는 원격 파일(URL)을 복사하여 이미지의 파일 시스템에 추가      |
@@ -140,21 +142,117 @@ RUN <command>
 
 2. exec
 
-shell 문자열 병합을 방지할 수 있다.
+shell 문자열 병합을 방지할 수 있다. JSON 배열로 구문 분석되므로 `'`가 아닌 `"`를 사용해야 한다.
 
 ```dockerfile
 RUN ["executable", "param1", "param2"]
 ```
 
-exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]`에서 `$HOME`은 변수 대체를 수행하지 않기 때문에 shell 형식을 사용하거나 `RUN ["sh", "-c", "echo $HOME"]`처럼 쉘을 직접 실행해야 한다.
+exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]`에서 `$HOME`은 변수 대체를 수행하지 않기 때문에 shell 형식을 사용하거나 `RUN ["sh", "-c", "echo $HOME"]`처럼 shell을 직접 실행해야 한다.
 
 #### CMD
 
 컨테이너 실행 시 해당 명령을 실행한다. `Dockerfile`에는 하나의 `CMD` 명령어만 있을 수 있다. 여러 개의 `CMD`가 존재한다면 마지막 `CMD`만 적용된다.
 
-`docker run`을 통해 실행될 때 직접 실행할 명령어를 지정한 경우 `Dockfile` 내에 `CMD`는 무시되고 지정한 명령어만 실행된다. 만약 `docker run <image> ls` 하게 되면 `ls` 명령만을 실행한다.
+`docker run`을 통해 실행될 때 직접 실행할 명령어를 인자로 전달한 경우 `Dockfile` 내에 `CMD`는 무시되고 전달한 명령어만 실행된다. 만약 `docker run <image> ls` 하게 되면 `ls` 명령만을 실행한다.
 
-주로 배포하는 시점 및 환경에 따라 `command`를 다양하게 지정해야 하는 경우 활용할 수 있다.
+주로 배포하는 시점 및 환경에 따라 `<command>`를 다양하게 지정해야 하는 경우 활용할 수 있다.
+
+`CMD`는 3가지 형식이 있다.
+
+1. exec (선호)
+
+JSON 배열로 구문 분석되므로 `'`가 아닌 `"`를 사용해야 한다.
+
+```dockerfile
+CMD ["executable","param1","param2"]
+```
+
+2. `ENTRYPOINT`에 대한 기본 매개변수
+
+```dockerfile
+CMD ["param1","param2"]
+```
+
+3. shell
+
+```dockerfile
+CMD command param1 param2
+```
+
+exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]`에서 `$HOME`은 변수 대체를 수행하지 않기 때문에 shell 형식을 사용하거나 `RUN ["sh", "-c", "echo $HOME"]`처럼 shell을 직접 실행해야 한다.
+
+#### LABEL
+
+이미지에 Key-Value 형태의 메타데이터를 추가한다.
+
+```dockerfile
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
+```
+
+`LABEL`의 value 내에 공백을 포함하려면 `"`와 `\`를 사용한다.
+
+```dockerfile
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL version="1.0"
+LABEL description="This text illustrates \
+that label-values can span multiple lines."
+```
+
+이미지는 여러 개의 `LABEL`이 있을 수 있으며 한 줄에 여러 `LABEL`을 지정할 수 있다. 기본 또는 상위 이미지에 포함된 `LABEL`은 이미지에 상속된다. 중복된 `LABEL`은 가장 최근에 설정된 값이 우선 적용된다.
+
+```dockerfile
+LABEL multi.label1="value1" multi.label2="value2" other="value3"
+
+LABEL multi.label1="value4" \
+      multi.label2="value5" \
+      other="value6"
+
+# "multi.label1": "value4",
+# "multi.label2": "value5",
+# "other": "value6",
+```
+
+이미지의 `LABEL`은 `docker image inspect`를 통해 확인이 가능하다. `LABEL`만 표시할 때는 `--format='{{ .Config.Labels }}'`를 사용한다.
+
+```bash
+$ docker image inspect --format='' <image>
+```
+
+```json
+[
+  {
+    "Config": {
+      "Labels": {
+        "com.example.label-with-value": "foo",
+        "com.example.vendor": "ACME Incorporated",
+        "description": "This text illustrates that label-values can span multiple lines.",
+        "multi.label1": "value4",
+        "multi.label2": "value5",
+        "other": "value6",
+        "version": "1.0"
+      }
+      // ...
+    }
+    // ...
+  }
+]
+```
+
+#### MAINTAINER (Deprecated)
+
+이미지의 작성자 정보를 추가한다.
+
+```dockerfile
+MAINTAINER <name>
+```
+
+`MAINTAINER`은 더 이상 사용되지 않으므로 `LABEL`을 사용해야 한다.
+
+```dockerfile
+LABEL maintainer="Jiheon Lee <jiheon.lee.dev@gmail.com>"
+```
 
 ### 예시
 
