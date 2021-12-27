@@ -7,6 +7,8 @@
       - [CMD](#cmd)
       - [LABEL](#label)
       - [MAINTAINER (Deprecated)](#maintainer-deprecated)
+      - [EXPOSE](#expose)
+      - [ENV](#env)
     - [예시](#예시)
 - [References](#references)
 
@@ -252,6 +254,51 @@ MAINTAINER <name>
 
 ```dockerfile
 LABEL maintainer="Jiheon Lee <jiheon.lee.dev@gmail.com>"
+```
+
+#### EXPOSE
+
+공개할 컨테이너의 포트를 지정한다. protocol은 TCP 또는 UDP로 지정할 수 있으며, 지정되지 않은 경우 기본 값은 TCP이다.
+
+```dockerfile
+EXPOSE <port> [<port>/<protocol>...]
+```
+
+TCP와 UDP 모두 지정하려면 두 줄로 선언한다.
+
+```dockerfile
+EXPOSE 80/tcp
+EXPOSE 80/udp
+```
+
+`EXPOSE`는 실제로 포트를 공개하지 않는다. 어떤 포트를 공개할 것인지에 대한 일종의 문서 역할이다. 포트를 공개할 때는 컨테이너를 실행시키는 시점에서 아래와 같이 진행해야 한다.
+
+```bash
+$ docker run -p 80:80/tcp -p 80:80/udp
+```
+
+#### ENV
+
+환경 변수를 Key-Value로 설정한다.
+
+```dockerfile
+ENV <key>=<value> ...
+```
+
+Value 내에 공백을 포함하려면 `"`와 `\`를 사용하고, 한 번에 여러 환경변수를 설정할 수 있다.
+
+```dockerfile
+ENV MY_NAME="John Doe"
+ENV MY_DOG=Rex\ The\ Dog \
+    MY_CAT=fluffy
+```
+
+`ENV`를 사용하여 설정한 환경 변수는 결과 이미지에서 컨테이너를 실행할 때 유지된다. 아래와 같이 확인한 후, 값을 변경할 수 있다.
+
+```bash
+$ docker inspect
+
+$ docker run --env <key>=<value>
 ```
 
 ### 예시
