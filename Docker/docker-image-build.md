@@ -235,9 +235,7 @@ $ docker image inspect --format='' <image>
         "other": "value6",
         "version": "1.0"
       }
-      // ...
     }
-    // ...
   }
 ]
 ```
@@ -300,6 +298,20 @@ $ docker inspect
 
 $ docker run --env <key>=<value>
 ```
+
+#### ADD
+
+#### COPY
+
+#### ENTRYPOINT
+
+#### VOLUME
+
+#### USER
+
+#### WORKDIR
+
+#### ARG
 
 ### 예시
 
