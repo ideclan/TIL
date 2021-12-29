@@ -9,6 +9,13 @@
       - [MAINTAINER (Deprecated)](#maintainer-deprecated)
       - [EXPOSE](#expose)
       - [ENV](#env)
+      - [ADD](#add)
+      - [COPY](#copy)
+      - [ENTRYPOINT](#entrypoint)
+      - [VOLUME](#volume)
+      - [USER](#user)
+      - [WORKDIR](#workdir)
+      - [ARG](#arg)
     - [예시](#예시)
 - [References](#references)
 
@@ -156,7 +163,7 @@ exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]
 
 컨테이너 실행 시 해당 명령을 실행한다. `Dockerfile`에는 하나의 `CMD` 명령어만 있을 수 있다. 여러 개의 `CMD`가 존재한다면 마지막 `CMD`만 적용된다.
 
-`docker run`을 통해 실행될 때 직접 실행할 명령어를 인자로 전달한 경우 `Dockfile` 내에 `CMD`는 무시되고 전달한 명령어만 실행된다. 만약 `docker run <image> ls` 하게 되면 `ls` 명령만을 실행한다.
+`docker run`을 통해 실행될 때 직접 실행할 명령어를 인자로 전달한 경우 `Dockfile` 내에 `CMD`는 무시되고 전달한 명령어만 실행된다. 예를 들어, `docker run <image> echo world`는 `"world"`를 출력한다.
 
 주로 배포하는 시점 및 환경에 따라 `<command>`를 다양하게 지정해야 하는 경우 활용할 수 있다.
 
@@ -167,13 +174,13 @@ exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]
 JSON 배열로 구문 분석되므로 `'`가 아닌 `"`를 사용해야 한다.
 
 ```dockerfile
-CMD ["executable","param1","param2"]
+CMD ["executable", "param1", "param2"]
 ```
 
 2. `ENTRYPOINT`에 대한 기본 매개변수
 
 ```dockerfile
-CMD ["param1","param2"]
+CMD ["param1", "param2"]
 ```
 
 3. shell
@@ -301,9 +308,64 @@ $ docker run --env <key>=<value>
 
 #### ADD
 
+새 파일, 디렉토리 또는 원격 파일(URL)을 복사하여 이미지의 파일 시스템에 추가한다. `<dest>`는 절대 경로 또는 `WORKDIR`에 대한 상대 경로이며 해당 컨테이너 내부에 복사된다.
+
+```dockerfile
+ADD [--chown=<user>:<group>] <src>... <dest>
+
+# 공백이 포함된 경로인 경우
+ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
+```
+
 #### COPY
 
+새 파일 또는 디렉토리를 복사하여 컨테이너의 파일 시스템에 추가한다. `<dest>`는 절대 경로 또는 `WORKDIR`에 대한 상대 경로이며 해당 컨테이너 내부에 복사된다.
+
+```dockerfile
+COPY [--chown=<user>:<group>] <src>... <dest>
+
+# 공백이 포함된 경로인 경우
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
+```
+
 #### ENTRYPOINT
+
+컨테이너 실행 시 명령을 실행한다. `Dockfile`의 마지막 `ENTRYPOINT` 명령만이 영향을 미친다.
+
+`docker run`을 통해 실행될 때 직접 실행할 명령어를 인자로 전달한 경우 `ENTRYPOINT`의 파라미터로 인식한다. 예를 들어, `docker run <image> echo world`는 `echo world`를 파라미터로 인식한다.
+
+주로 배포되어 실행될 때 항상 수행해야 하는 명령어를 지정하거나 웹 서버, db 등 프로세스가 항상 실행되어야 하는 경우에 사용한다.
+
+`ENTRYPOINT`는 2가지 형식이 있다.
+
+1. exec (선호)
+
+JSON 배열로 구문 분석되므로 `'`가 아닌 `"`를 사용해야 한다. `docker run --entrypoint=""`를 통해 `ENTRYPOINT`를 재정의할 수 있다.
+
+```dockerfile
+ENTRYPOINT ["executable", "param1", "param2"]
+```
+
+```dockerfile
+ENTRYPOINT ["echo", "Hello"]
+CMD ["world"]
+
+# hello world
+```
+
+2. shell
+
+`CMD` 또는 실행 명령줄 인수가 사용되는 것을 방지하지만 `ENTRYPOINT`가 신호를 전달하지 않는 `/bin/sh -c`의 하위 명령으로 시작된다는 단점이 있다.
+
+```dockerfile
+ENTRYPOINT command param1 param2
+```
+
+exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]`에서 `$HOME`은 변수 대체를 수행하지 않기 때문에 shell 형식을 사용하거나 `RUN ["sh", "-c", "echo $HOME"]`처럼 shell을 직접 실행해야 한다.
+
+`CMD`와 `ENTRYPOINT` 명령어는 모두 컨테이너를 실행할 때 실행되는 명령을 정의한다. `Dockerfile`은 `CMD` 또는 `ENTRYPOINT` 명령 중 하나 이상을 지정해야 한다.
+
+컨테이너를 실행 파일로 사용할 때 `ENTRYPOINT`를 정의해야 하며, `CMD`는 `ENTRYPOINT` 명령에 대한 기본 인수를 정의하거나 컨테이너에서 임시 명령을 실행하는 방법으로 사용해야 한다.
 
 #### VOLUME
 
