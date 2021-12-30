@@ -111,7 +111,7 @@ $ docker build [OPTIONS] PATH | URL
 |    `COPY`    |            새 파일 또는 디렉토리를 복사하여 컨테이너의 파일 시스템에 추가             |
 | `ENTRYPOINT` |                             컨테이너 실행 시 명령을 실행                              |
 |   `VOLUME`   |                                      볼륨 마운트                                      |
-|    `USER`    |                                   사용자 권한 지정                                    |
+|    `USER`    |                              사용자 이름 또는 그룹 지정                               |
 |  `WORKDIR`   |                                  작업 디렉토리 지정                                   |
 |    `ARG`     | `build` 시에만 사용되는 변수 정의, `--build-arg <name>=<value>` 옵션을 통해 전달 가능 |
 
@@ -334,7 +334,7 @@ COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
 
 `docker run`을 통해 실행될 때 직접 실행할 명령어를 인자로 전달한 경우 `ENTRYPOINT`의 파라미터로 인식한다. 예를 들어, `docker run <image> echo world`는 `echo world`를 파라미터로 인식한다.
 
-주로 배포되어 실행될 때 항상 수행해야 하는 명령어를 지정하거나 웹 서버, db 등 프로세스가 항상 실행되어야 하는 경우에 사용한다.
+주로 웹 서버, DB 등 컨테이너가 실행될 때 실행할 명령어가 변경되지 않을 경우 활용한다.
 
 `ENTRYPOINT`는 2가지 형식이 있다.
 
@@ -369,11 +369,37 @@ exec 형식은 shell을 호출하지 않는다. 따라서 `RUN ["echo", "$HOME"]
 
 #### VOLUME
 
+지정된 이름으로 마운트 지점을 만들고 호스트 또는 다른 컨테이너에서 외부적으로 마운트된 볼륨을 보유하는 것을 표시한다.
+
+```dockerfile
+VOLUME ["/data"]
+```
+
 #### USER
+
+사용자 이름(UID) 또는 그룹(GID)을 지정한다.
+
+```dockerfile
+USER <user>[:<group>]
+
+USER <UID>[:<GID>]
+```
 
 #### WORKDIR
 
+작업 디렉토리 지정한다. 여러 번 사용할 수 있으며 상대 경로가 제공되면 이전 `WORKDIR`의 경로를 기준으로 한다.
+
+```dockerfile
+WORKDIR /path/to/workdir
+```
+
 #### ARG
+
+`build` 시에만 사용되는 변수 정의, `--build-arg <name>=<value>` 옵션을 통해 전달이 가능하다.
+
+```dockerfile
+ARG <name>[=<default value>]
+```
 
 ### 예시
 
@@ -386,6 +412,8 @@ $ echo "<h1>Hello, Docker</h1>" > index.html
 
 # 사용할 이미지 지정
 FROM ubuntu:20.04
+
+LABEL maintainer="Jiheon Lee <jiheon.lee.dev@gmail.com>"
 
 # 해당 명령을 실행하여 결과를 이미지에 반영
 # DEBIAN_FRONTEND=noninteractive
@@ -404,7 +432,7 @@ COPY ["index.html", "."]
 EXPOSE 80
 
 # 컨테이너가 생성된 이후에 해당 명령을 실행
-CMD ["apachectl", "-D", "FOREGROUND"]
+ENTRYPOINT ["apachectl", "-D", "FOREGROUND"]
 ```
 
 ```bash
