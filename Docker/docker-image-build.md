@@ -1,4 +1,4 @@
-- [Docker 이미지 만들기](#docker-이미지-만들기)
+- [Docker 이미지 생성하기](#docker-이미지-생성하기)
   - [Commit](#commit)
   - [Dockerfile & Build](#dockerfile--build)
     - [Dockerfile 작성 및 명령어](#dockerfile-작성-및-명령어)
@@ -19,7 +19,7 @@
     - [예시](#예시)
 - [References](#references)
 
-# Docker 이미지 만들기
+# Docker 이미지 생성하기
 
 ## Commit
 
