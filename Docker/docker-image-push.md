@@ -1,7 +1,21 @@
 - [Docker 이미지 배포하기](#docker-이미지-배포하기)
   - [Docker Hub](#docker-hub)
+  - [GitHub](#github)
+- [References](#references)
 
 # Docker 이미지 배포하기
+
+Image를 Registry로 `push`하여 업로드하는 과정을 통해 Image를 배포할 수 있다.
+
+**Registry**
+
+- Docker Hub Registry
+- GitHub Packages Container Registry
+- Amazon Elastic Container Registry
+- Google Container Registry
+- Harbor Registry
+
+> Registry는 Docker Image를 공유하기 위한 서버 애플리케이션이다.
 
 ## Docker Hub
 
@@ -44,3 +58,16 @@ $ docker pull <username>/<image>:<tag>
 
 # ex) docker pull jiheon/apache-server:1.0
 ```
+
+## GitHub
+
+사용 방법에 대하여 자세한 설명은 [Working with the Container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)에서 참고할 수 있습니다.
+
+먼저 Container Registry에 인증하기 위한 개인 엑세스 토큰을 생성한다.
+
+우측 상단 Profile > Settings > 좌측 Developer settings > 좌측 Personal access tokens로 이동하여 Generate new token을 클릭한다.
+
+# References
+
+- [Docker Docs](https://docs.docker.com/engine/reference/run/)
+- [GitHub Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
