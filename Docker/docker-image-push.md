@@ -49,7 +49,7 @@ $ docker push <username>/<image>:<tag>
 
 Docker Hub에 이미지가 업로드된 것을 확인할 수 있다.
 
-<img width="1392" alt="" src="https://user-images.githubusercontent.com/48443734/147847693-4e1d334f-2dce-4a6d-9f4f-f9b0b4087d7b.png">
+<img width="1392" alt="" src="https://user-images.githubusercontent.com/48443734/147847693-4e1d334f-2dce-4a6d-9f4f-f9b0b4087d7b.png" />
 
 `docker pull`을 통해 Docker Hub에 업로드된 이미지를 다운로드할 수 있다.
 
@@ -63,9 +63,43 @@ $ docker pull <username>/<image>:<tag>
 
 사용 방법에 대하여 자세한 설명은 [Working with the Container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)에서 참고할 수 있습니다.
 
-먼저 Container Registry에 인증하기 위한 개인 엑세스 토큰을 생성한다.
+먼저 Container Registry에 인증하기 위한 Personal access token을 생성해야 한다.
 
 우측 상단 Profile > Settings > 좌측 Developer settings > 좌측 Personal access tokens로 이동하여 Generate new token을 클릭한다.
+
+Personal access token의 이름과 유효기간을 설정하고, 범위를 write/delete:packages로 선택한 후 Generate token 버튼을 클릭하면 생성된다.
+
+<img width="1649" alt="" src="https://user-images.githubusercontent.com/48443734/147902102-7380db0d-5409-481b-b68d-7f19080cd48a.png" />
+
+CLI 환경에서 생성한 Personal access token을 환경 변수로 저장한다.
+
+```bash
+$ export CR_PAT=YOUR_TOKEN
+```
+
+Container Registry에 로그인한다.
+
+```bash
+$ echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+```
+
+`docker push`를 통해 원하는 이미지를 업로드한다.
+
+```bash
+$ docker push ghcr.io/<username>/<image>:<tag>
+
+# ex) docker push ghcr.io/jiheon/apache-server:1.0
+```
+
+GitHub Packages에 이미지가 업로드된 것을 확인할 수 있다.
+
+<img width="1649" alt="" src="https://user-images.githubusercontent.com/48443734/147903217-54bb0bbb-65a1-49ee-9c75-b32a5a774104.png" />
+
+기본적으로 Private으로 되므로 Packages settings에서 Public으로 변경이 가능하다. 그리고 Connect Repository을 통해 원하는 Repository를 선택하여 연결이 가능하다.
+
+<img width="1649" alt="" src="https://user-images.githubusercontent.com/48443734/147903388-63a695d2-4863-4f57-a9c1-8c4ba1fadce2.png" />
+
+<img width="1649" alt="" src="https://user-images.githubusercontent.com/48443734/147903595-deeae4af-a637-437c-97ee-20a44b77da4b.png" />
 
 # References
 
