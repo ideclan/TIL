@@ -1,7 +1,7 @@
 # 함수형 프로그래밍과 JavaScript ES6+
 
 - [평가와 일급, 고차 함수](#평가와-일급-고차-함수)
-- [이터러블과 이터레이터](#이터러블과-이터레이터)
+- [iterable과-iterator](#iterable과-iterator)
 
 ## 평가와 일급, 고차 함수
 
@@ -80,7 +80,7 @@ console.log(add10); // (b) => a + b
 console.log(add10(5)); // 15
 ```
 
-## 이터러블과 이터레이터
+## iterable과 iterator
 
 ### 기존과 달라진 ES6에서의 리스트 순회
 
@@ -98,7 +98,7 @@ for (const a of list) {
 }
 ```
 
-### Array, Set, Map을 통해 알아보는 이터러블/이터레이터 프로토콜
+### Array, Set, Map을 통해 알아보는 iterable/iterator protocol
 
 ES6에서의 순회를 어떻게 추상화하였을까? `Array`, `Set`, `Map`을 통해 알아보자.
 
@@ -123,11 +123,9 @@ console.log(set[0]); // undefined
 console.log(map[0]); // undefined
 ```
 
-### 이터러블/이터레이터 프로토콜
+#### iterable/iterator protocol
 
-**이터러블**이란 이터레이터를 반환하는 `[Symbol.iterator]()` 함수를 가진 값이다.
-
-`Array`, `Set`, `Map`은 모두 `[Symbol.iterator]()` 함수를 가지고 있어 이터러블이라 할 수 있다.
+`Array`, `Set`, `Map`은 모두 `[Symbol.iterator]()` 함수를 가지고 있어 iterable이라 할 수 있다. **iterable**이란 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가진 값을 의미한다.
 
 ```javascript
 console.log(arr[Symbol.iterator]); // ƒ values() { [native code] }
@@ -135,9 +133,7 @@ console.log(set[Symbol.iterator]); // ƒ values() { [native code] }
 console.log(map[Symbol.iterator]); // ƒ entries() { [native code] }
 ```
 
-`[Symbol.iterator]()` 함수를 `null`로 할당하면 어떻게 될까? `Uncaught TypeError`가 발생하면서 해당 값이 이터러블이 아니라고 한다.
-
-따라서 `Array`, `Set`, `Map`은 이터러블이기 때문에 `for of`를 통해 순회가 가능했다.
+`[Symbol.iterator]()` 함수를 `null`로 할당하면 어떻게 될까? `Uncaught TypeError`가 발생하면서 해당 값이 iterable이 아니라고 한다. 따라서 `Array`, `Set`, `Map`은 iterable이기 때문에 `for of`를 통해 순회가 가능했다.
 
 ```javascript
 const arr = [1, 2, 3];
@@ -145,11 +141,7 @@ arr[Symbol.iterator] = null;
 for (const a of arr) console.log(a); // Uncaught TypeError: arr is not iterable
 ```
 
-그렇다면 내부적으로 순회는 어떻게 동작했을까?
-
-**이터레이터**는 `{ value, done }` 객체를 반환하는 `next()` 함수를 가진 값이다. 이를 통해 내부적으로 `next()` 함수를 호출하면서 값은 `value`로 접근하고, `done`이 `true`일 때까지 순회하게 된다.
-
-이와 같이 이터러블을 `for of`, 전개 연산자 등과 함께 동작하도록 한 규약을 **이터러블/이터레이터 프로토콜**이라 한다.
+그렇다면 내부적으로 순회는 어떻게 동작했을까? 이는 iterator를 통해 내부적으로 `next()` 함수를 호출하면서 값은 `value`로 접근하고, `done`이 `true`일 때까지 순회하고 있다. 즉, **iterator**는 `{ value, done }` 객체를 반환하는 `next()` 함수를 가진 값을 의미한다. 이와 같이 iterable을 `for of`, 전개 연산자 등과 함께 동작하도록 한 규약을 **iterable/iterator protocol**이라 한다.
 
 ```javascript
 const arr = [1, 2, 3];
@@ -168,10 +160,10 @@ const map = new Map([
   ["b", 2],
   ["c", 3],
 ]);
-let mapIterator = map.keys(); // or values(), entries() 함수는 이터레이터를 반환한다
+let mapIterator = map.keys(); // or values(), entries() 함수는 iterator를 반환한다
 console.log(mapIterator); // MapIterator {'a', 'b', 'c'}
 
-let mapIterator2 = mapIterator[Symbol.iterator](); // 자기 자신의 이터레이터를 반환한다
+let mapIterator2 = mapIterator[Symbol.iterator](); // 자기 자신의 iterator를 반환한다
 console.log(mapIterator2); // MapIterator {'a', 'b', 'c'}
 
 console.log(mapIterator2.next()); // {value: 'a', done: false}
@@ -180,9 +172,9 @@ console.log(mapIterator2.next()); // {value: 'c', done: false}
 console.log(mapIterator2.next()); // {value: undefined, done: true}
 ```
 
-### 사용자 정의 이터러블을 통해 알아보기
+### 사용자 정의 iterable을 통해 알아보기
 
-3부터 1씩 감소하면서 0이 되면 종료하는 이터러블을 정의했다.
+3부터 1씩 감소하면서 0이 되면 종료하는 iterable을 정의했다.
 
 ```javascript
 const iterable = {
@@ -204,7 +196,7 @@ console.log(iterator.next()); // {value: 1, done: false}
 for (const a of iterable) console.log(a); // 3 2 1
 ```
 
-하지만 앞에서 살펴본 예제와 다르게 `for of`에서 `iterator`를 사용할 수 없으며, `Uncaught TypeError`가 발생하면서 이터러블이 아니라고 한다.
+하지만 앞에서 살펴본 예제와 다르게 `iterator`는 `for of`에서 사용할 수 없고, iterable이 아니라고 하면서 `Uncaught TypeError`가 발생한다.
 
 ```javascript
 let iterator = iterable[Symbol.iterator]();
@@ -213,7 +205,7 @@ console.log(iterator.next()); // {value: 3, done: false}
 for (const a of iterator) console.log(a); // Uncaught TypeError: iterator is not iterable
 ```
 
-따라서 `for of`에서 `iterator`를 사용할 수 있고, 일부 진행했을 때의 이후로 순회가 가능하도록 해야 한다. 이는 이터레이터 또한 `[Symbol.iterator]()` 함수를 가지고 있어야 하고, 이를 통해 반환되는 이터레이터는 자기 자신의 이터레이터라는 것을 의미한다.
+`for of`에서 `iterator`를 사용할 수 있고, 일부 진행했을 때의 이후로 순회가 가능하도록 하려면 iterator가 자기 자신의 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있어야 한다. 이렇게 구현된 iterable을 **well-formed iterable**이라고 한다.
 
 ```javascript
 const iterable = {
