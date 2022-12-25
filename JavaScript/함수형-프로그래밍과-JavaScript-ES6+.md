@@ -2,6 +2,7 @@
 
 - [평가와 일급, 고차 함수](#평가와-일급-고차-함수)
 - [iterable과-iterator](#iterable과-iterator)
+- [generator](#generator)
 
 ## 평가와 일급, 고차 함수
 
@@ -228,4 +229,87 @@ console.log(iterator === iterator[Symbol.iterator]()); // true
 
 console.log(iterator.next()); // {value: 3, done: false}
 for (const a of iterator) console.log(a); // 2 1
+```
+
+## generator
+
+### generator function
+
+일반 함수는 하나의 값만을 반환하거나 반환하지 않을 수 있다. 하지만 generator 함수는 여러 개의 값을 필요에 따라 하나씩 반환(`yield`)할 수 있다.
+
+generator 함수는 `function*`로 정의할 수 있다. 호출하면 코드가 실행되지 않고, 대신 실행을 처리하는 `Generator`를 반환한다. `next()` 함수를 호출하면 `yield`를 만날 때까지 실행하여 `value`, `done` property를 가진 객체를 반환하고 함수의 실행을 멈춘다. 함수의 실행이 끝나면 `done`이 `true`가 된다.
+
+```javascript
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+let generator = gen();
+console.log(generator); // Object [Generator] {}
+console.log(generator.next()); // { value: 1, done: false }
+console.log(generator.next()); // { value: 2, done: false }
+console.log(generator.next()); // { value: 3, done: false }
+console.log(generator.next()); // { value: undefined, done: true }
+```
+
+### generator와 iterable
+
+**generator**는 iterator처럼 `next()` 함수를 호출할 수 있는 것을 보아 **iterable**이다. 따라서 자기 자신의 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있다. 그리고 `for of`를 통해 순회할 수 있다. 
+
+이러한 성질을 이용하여 어떠한 상태나 값을 순회할 수 있는 형태로 만들 수 있다.
+
+```javascript
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+  return 4;
+}
+
+let generator = gen();
+console.log(generator === generator[Symbol.iterator]()); // true
+
+// 순회하면서 done이 true일 때의 value는 무시하는 것을 주의해야 한다
+for (const a of gen()) console.log(a); // 1 2 3
+```
+
+### 예시를 통해 generator 알아보기
+
+0에서 함수의 인자 값까지의 자연수 중에서 홀수만을 반환하는 generator 함수를 정의한다.
+
+```javascript
+function* odds(limit) {
+  for (let i = 0; i < limit; i++) {
+    if (i % 2) yield i;
+  }
+}
+
+for (const a of odds(10)) console.log(a); // 1 3 5 7 9
+```
+
+기존 `adds()` 함수 내에 `for i++`를 1씩 계속 증가하는 `infinity()` 함수로 대체한다. 이를 통해 무한 루프를 방지할 수 있다. 그리고 순회하면서 값을 제한하는 로직을 `limit()` 함수로 분리할 수 있다.
+
+이와 같이 여러 generator 함수들을 조합하여 정의할 수 있다.
+
+```javascript
+function* infinity(i = 0) {
+  while (true) yield i++;
+}
+
+function* limit(l, iterable) {
+  for (const a of iterable) {
+    yield a;
+    if (a == l) return;
+  }
+}
+
+function* odds(l) {
+  for (const a of limit(l, infinity(2))) {
+    if (a % 2) yield a;
+  }
+}
+
+for (const a of odds(10)) console.log(a); // 3 5 7 9
 ```
