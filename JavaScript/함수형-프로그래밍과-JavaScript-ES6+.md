@@ -1,8 +1,8 @@
 # 함수형 프로그래밍과 JavaScript ES6+
 
 - [평가와 일급, 고차 함수](#평가와-일급-고차-함수)
-- [iterable과-iterator](#iterable과-iterator)
-- [generator](#generator)
+- [이터러블(Iterable)과 이터레이터(Iterator)](#이터러블(Iterable)과-이터레이터(Iterator))
+- [제너레이터(Generator)](#제너레이터(Generator))
 
 ## 평가와 일급, 고차 함수
 
@@ -81,7 +81,7 @@ console.log(add10); // (b) => a + b
 console.log(add10(5)); // 15
 ```
 
-## iterable과 iterator
+## 이터러블(Iterable)과 이터레이터(Iterator)
 
 ### 기존과 달라진 ES6에서의 리스트 순회
 
@@ -99,11 +99,11 @@ for (const a of list) {
 }
 ```
 
-### Array, Set, Map을 통해 알아보는 iterable/iterator protocol
+### Array, Set, Map을 통해 알아보는 이터러블/이터레이터 프로토콜(Iterable/Iterator protocol)
 
 ES6에서의 순회를 어떻게 추상화하였을까? `Array`, `Set`, `Map`을 통해 알아보자.
 
-`Array`, `Set`, `Map`은 모두 `for of`를 통해 순회가 가능하다. 하지만 `Set`과 `Map`은 `Array`처럼 인덱스를 통해 값에 접근이 불가능하다. 그렇다면 이들은 어떻게 순회를 할 수 있었을까?
+`Array`, `Set`, `Map`은 `for...of`를 통해 순회가 가능하다. 하지만 `Set`과 `Map`은 `Array`처럼 인덱스를 통해 값에 접근이 불가능하다. 그렇다면 이들은 어떻게 순회를 할 수 있었을까?
 
 ```javascript
 const arr = [1, 2, 3];
@@ -124,9 +124,9 @@ console.log(set[0]); // undefined
 console.log(map[0]); // undefined
 ```
 
-#### iterable/iterator protocol
+#### 이터러블/이터레이터 프로토콜(Iterable/Iterator protocol)
 
-**iterable**이란 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가진 객체이다. `Array`, `Set`, `Map`은 `[Symbol.iterator]()` 함수를 가지고 있어 iterable이라 할 수 있다.
+**이터러블(Iterable)**이란 이터레이터(Iterator)를 반환하는 `[Symbol.iterator]()` 함수를 가진 객체이다. `Array`, `Set`, `Map`은 `[Symbol.iterator]()` 함수를 가지고 있어 이터러블이라 할 수 있다.
 
 ```javascript
 console.log(arr[Symbol.iterator]); // ƒ values() { [native code] }
@@ -134,7 +134,7 @@ console.log(set[Symbol.iterator]); // ƒ values() { [native code] }
 console.log(map[Symbol.iterator]); // ƒ entries() { [native code] }
 ```
 
-`[Symbol.iterator]()` 함수를 `null`로 할당하면 어떻게 될까? iterable이 아니어서 `TypeError`가 발생하고 순회할 수가 없다. 즉, `Array`, `Set`, `Map`은 `[Symbol.iterator]()` 함수를 통해 순회하는 것을 알 수 있다.
+`[Symbol.iterator]()` 함수를 `null`로 할당하면 어떻게 될까? `TypeError`가 발생하며 순회할 수 없다. 즉, `Array`, `Set`, `Map`은 `[Symbol.iterator]()` 함수를 통해 순회하는 것을 알 수 있다.
 
 ```javascript
 const arr = [1, 2, 3];
@@ -142,7 +142,7 @@ arr[Symbol.iterator] = null;
 for (const a of arr) console.log(a); // TypeError: arr is not iterable
 ```
 
-그렇다면 내부적으로 순회는 어떻게 동작했을까? 이는 iterator를 통해 내부에서 `next()` 함수를 호출하면서 값을 `value`로 접근하고, `done`이 `true`가 될 때까지 순회하고 있다. 즉, **iterator**는 `{ value, done }` 객체를 반환하는 `next()` 함수를 가진 객체이다. 이와 같이 iterable을 `for of`, 전개 연산자 등과 함께 동작하도록 한 규약을 **iterable/iterator protocol**이라 한다.
+그렇다면 내부적으로 순회는 어떻게 동작했을까? 이는 이터레이터를 통해 내부에서 `next()` 함수를 호출하면서 값을 `value`로 접근하고, `done`이 `true`가 될 때까지 순회하고 있다. 즉, **이터레이터(Iterator)**는 `value`와 `done` 프로퍼티(Property)를 가진 객체를 반환하는 `next()` 함수를 가진 객체이다. 이와 같이 이터러블/이터레이터를 `for...of`, 전개 연산자 등과 함께 동작하도록 한 규약을 **이터러블/이터레이터 프로토콜(Iterable/Iterator protocol)**이라 한다.
 
 ```javascript
 const arr = [1, 2, 3];
@@ -161,10 +161,10 @@ const map = new Map([
   ["b", 2],
   ["c", 3],
 ]);
-let mapIterator = map.keys(); // or values(), entries() 함수는 iterator를 반환한다
+let mapIterator = map.keys(); // or values(), entries() 함수는 이터레이터를 반환한다
 console.log(mapIterator); // MapIterator {'a', 'b', 'c'}
 
-let mapIterator2 = mapIterator[Symbol.iterator](); // 자기 자신의 iterator를 반환한다
+let mapIterator2 = mapIterator[Symbol.iterator](); // 자기 자신의 이터레이터를 반환한다
 console.log(mapIterator2); // MapIterator {'a', 'b', 'c'}
 
 console.log(mapIterator2.next()); // {value: 'a', done: false}
@@ -173,9 +173,9 @@ console.log(mapIterator2.next()); // {value: 'c', done: false}
 console.log(mapIterator2.next()); // {value: undefined, done: true}
 ```
 
-### 사용자 정의 iterable을 통해 알아보기
+### 사용자 정의 이터러블(Iterable)을 통해 알아보기
 
-3부터 1씩 감소하면서 0이 되면 종료하는 iterable을 정의했다.
+3부터 1씩 감소하면서 0이 되면 실행을 종료하는 이터러블을 정의한다.
 
 ```javascript
 const iterable = {
@@ -197,7 +197,7 @@ console.log(iterator.next()); // {value: 1, done: false}
 for (const a of iterable) console.log(a); // 3 2 1
 ```
 
-하지만 앞에서 살펴본 예제와 다르게 `iterator`는 `for of`에서 사용할 수 없고, iterable이 아니어서 `TypeError`가 발생한다.
+하지만 앞에서 살펴본 예제와 다르게 이터레이터는 `for...of`에서 사용할 수 없으며 `TypeError`가 발생한다.
 
 ```javascript
 let iterator = iterable[Symbol.iterator]();
@@ -206,7 +206,7 @@ console.log(iterator.next()); // {value: 3, done: false}
 for (const a of iterator) console.log(a); // TypeError: iterator is not iterable
 ```
 
-`for of`에서 `iterator`를 사용할 수 있고, 일부 진행했을 때의 이후로 순회가 가능하도록 하려면 iterator가 자기 자신의 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있어야 한다. 이와 같이 구현된 iterable을 **well-formed iterable**이라고 한다.
+`for...of`에서 이터레이터를 사용할 수 있고, 일부 진행했을 때의 이후로 순회가 가능하도록 하려면 이터레이터가 자기 자신의 이터레이터를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있어야 한다. 이와 같이 구현된 이터러블을 **well-formed iterable**이라고 한다.
 
 ```javascript
 const iterable = {
@@ -231,13 +231,13 @@ console.log(iterator.next()); // {value: 3, done: false}
 for (const a of iterator) console.log(a); // 2 1
 ```
 
-## generator
+## 제너레이터(Generator)
 
-### generator function
+### 제너레이터 함수(Generator function)
 
-일반 함수는 하나의 값만을 반환하거나 반환하지 않을 수 있다. 하지만 generator 함수는 여러 개의 값을 필요에 따라 하나씩 반환(`yield`)할 수 있다.
+일반 함수는 하나의 값만을 반환하거나 반환하지 않을 수 있다. 하지만 **제너레이터 함수(Generator function)**는 여러 개의 값을 필요에 따라 하나씩 반환(`yield`)할 수 있다. `function*`로 정의할 수 있으며, 이는 실행을 처리하는 제너레이터(Generator)를 반환한다.
 
-generator 함수는 `function*`로 정의할 수 있다. 호출하면 코드가 실행되지 않고, 대신 실행을 처리하는 `Generator`를 반환한다. `next()` 함수를 호출하면 `yield`를 만날 때까지 실행하여 `value`, `done` property를 가진 객체를 반환하고 함수의 실행을 멈춘다. 함수의 실행이 끝나면 `done`이 `true`가 된다.
+제너레이터의 `next()` 함수를 호출하면 `yield`를 만날 때까지 함수를 실행하여 `value`, `done` 프로퍼티(Property)를 가진 객체를 반환하고 함수의 실행을 멈춘다. 함수의 실행이 끝나면 `done`이 `true`가 된다.
 
 ```javascript
 function* gen() {
@@ -254,9 +254,9 @@ console.log(generator.next()); // { value: 3, done: false }
 console.log(generator.next()); // { value: undefined, done: true }
 ```
 
-### generator와 iterable
+### 제너레이터(Generator)와 이터러블(Iterable)
 
-**generator**는 iterator처럼 `next()` 함수를 호출할 수 있는 것을 보아 **iterable**이다. 따라서 자기 자신의 iterator를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있다. 그리고 `for of`를 통해 순회할 수 있다. 
+**제너레이터(Generator)**는 이터레이터(Iterator)처럼 `next()` 함수를 호출할 수 있는 것을 보아 **이터러블(Iterable)**이다. 따라서 자기 자신의 이터레이터를 반환하는 `[Symbol.iterator]()` 함수를 가지고 있으므로 `for...of`, 전개 연산자, 구조 분해 할당을 사용할 수 있다. 이때, `done`이 `true`일 때의 `value`는 무시하는 것을 주의해야 한다.
 
 이러한 성질을 이용하여 어떠한 상태나 값을 순회할 수 있는 형태로 만들 수 있다.
 
@@ -265,51 +265,46 @@ function* gen() {
   yield 1;
   yield 2;
   yield 3;
-  return 4;
+  yield 4;
+  return 5;
 }
 
 let generator = gen();
 console.log(generator === generator[Symbol.iterator]()); // true
 
-// 순회하면서 done이 true일 때의 value는 무시하는 것을 주의해야 한다
-for (const a of gen()) console.log(a); // 1 2 3
+for (const a of gen()) console.log(a); // 1 2 3 4
+
+console.log([...gen()]); // [1, 2, 3, 4]
+
+const [a, b, ...rest] = gen();
+console.log(a); // 1
+console.log(b); // 2
+console.log(rest); // [3, 4]
 ```
 
-### 예시를 통해 generator 알아보기
+### 예시를 통해 제너레이터(Generator) 알아보기
 
-0에서 함수의 인자 값까지의 자연수 중에서 홀수만을 반환하는 generator 함수를 정의한다.
+`i`부터 `n`까지의 홀수만을 반환하는 `odds()` 함수를 정의한다. 이는 `infinity()` 함수를 통해 `i`부터 1씩 증가하는 무한수열을 만들 수 있다. `next()` 함수를 호출해야 실행하기 때문에 무한 루프에 빠지지 않는다. 그리고 `infinity()` 함수로부터 반환된 이터러블을 `limit()` 함수에 전달하여 `n`까지 순회하고 실행을 종료할 수 있도록 한다.
 
-```javascript
-function* odds(limit) {
-  for (let i = 0; i < limit; i++) {
-    if (i % 2) yield i;
-  }
-}
-
-for (const a of odds(10)) console.log(a); // 1 3 5 7 9
-```
-
-기존 `adds()` 함수 내에 `for i++`를 1씩 계속 증가하는 `infinity()` 함수로 대체한다. 이를 통해 무한 루프를 방지할 수 있다. 그리고 순회하면서 값을 제한하는 로직을 `limit()` 함수로 분리할 수 있다.
-
-이와 같이 여러 generator 함수들을 조합하여 정의할 수 있다.
+이와 같이 여러 제너레이터 함수들을 조합하여 정의할 수 있다.
 
 ```javascript
-function* infinity(i = 0) {
-  while (true) yield i++;
-}
-
-function* limit(l, iterable) {
-  for (const a of iterable) {
-    yield a;
-    if (a == l) return;
-  }
-}
-
-function* odds(l) {
-  for (const a of limit(l, infinity(2))) {
+function* odds(i, n) {
+  for (const a of limit(infinity(i), n)) {
     if (a % 2) yield a;
   }
 }
 
-for (const a of odds(10)) console.log(a); // 3 5 7 9
+function* infinity(i = 1) {
+  while (true) yield i++;
+}
+
+function* limit(iterable, n) {
+  for (const a of iterable) {
+    yield a;
+    if (a == n) return;
+  }
+}
+
+console.log([...odds(1, 10)]); // [1, 3, 5, 7, 9]
 ```
